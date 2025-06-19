@@ -1,0 +1,112 @@
+@attribute [Route(Routes.MENU_ROL)]
+@layout AdminLayout
+@using Microsoft.AspNetCore.Authorization;
+@using SharedApp.Dtos
+@attribute [Authorize]
+@inject IJSRuntime JSRuntime
+
+<!-- Card Header -->
+<div class="ds-title-section">
+
+	<h2 class="ds-title-h2">Administración <span>Menú</span></h2>
+
+	<!-- Botones de Exportar y Crear Nuevo con Buscador -->
+	<div class="ds-buttons-content">
+
+		<!-- Botón Exportar a Excel -->
+		<a href="javascript:void(0)" class="ds-btn-general ds-btn-blue" @onclick="ExportarExcel">
+			<img src="images/admin/ico-excel-blue.svg"
+				 width="19" height="19"> Excel
+		</a>
+
+		<!-- Botón Exportar a PDF -->
+		<a href="javascript:void(0)" class="ds-btn-general ds-btn-red" @onclick="ExportarPDF">
+			<img src="images/admin/ico-file-pdf-ref.svg"
+				 width="19" height="19">PDF
+		</a>
+
+		<a href="@Routes.NUEVO_MENU_ROL" class="ds-btn-general ds-btn-yellow">
+			<div class="button-3 headingheadline4-h4">Nuevo Menú</div>
+		</a>
+
+	</div>
+</div>
+
+
+<!-- Buscador -->
+<InputText @bind-Value="filtroBusqueda" class="form-control inter-regular-normal-comet-14px small-input mb-3" placeholder="Buscar por Rol o Menú" @oninput="FiltrarLista" style="width: 250px;" />
+
+<div class="table-responsive">
+
+	@if (isLoading)
+	{
+		<div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+			<div class="spinner-border text-primary" role="status">
+				<span class="visually-hidden">Cargando...</span>
+			</div>
+		</div>
+	}
+	else
+	{
+
+		<table class="general table">
+			<thead>
+				<tr>
+					@foreach (var column in new[]
+										{
+				(nameof(MenuRolDto.Rol), "Rol"),
+				(nameof(MenuRolDto.Menu), "Menú"),
+				(nameof(MenuRolDto.Estado), "Estado")
+				})
+					{
+						<th @onclick="() => OrdenarPor(column.Item1)">
+							@column.Item2 @(sortColumn == column.Item1 ? (sortAscending ? Constantes.FLECHA_ARRIBA : Constantes.FLECHA_ABAJO) : Constantes.VACIO)
+						</th>
+					}
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (listaMenus != null && listaMenus.Any())
+				{
+					@foreach (var menu in PaginatedItems)
+					{
+						<tr>
+							<td>@menu.Rol</td>
+							<td>@menu.Menu</td>
+							<td>
+								<label class="switch">
+									<input id=Constantes.BTN_DELETE type="checkbox" checked="@((menu.Estado == Constantes.ACTIVO))" @onclick="@(() => ConfirmDelete(menu))" />
+									<span class="slider round"></span>
+								</label>
+							</td>
+							<td>
+								<!-- Aquí puedes agregar más acciones si deseas -->
+								<Button Color="ButtonColor.Danger" Outline="true" @onclick="@(() => ConfirmDelete(menu))" Size="ButtonSize.Small">
+									<Icon Name="IconName.Trash3" />
+								</Button>
+							</td>
+						</tr>
+					}
+				}
+				else
+				{
+					<tr>
+						<td colspan="4">No hay datos disponibles.</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+
+		<!-- Controles de paginación -->
+		<div class="pagination-container">
+			<button class="btn btn-primary btn-sm" @onclick="PreviousPage" disabled="@(!CanGoPrevious)">⏪</button>
+			<span class="pagination-text inter-regular-normal-comet-14px">Página @CurrentPage de @TotalPages</span>
+			<button class="btn btn-primary btn-sm" @onclick="NextPage" disabled="@(!CanGoNext)">⏩</button>
+		</div>
+	}
+</div>
+
+
+
+

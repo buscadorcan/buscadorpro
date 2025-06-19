@@ -1,0 +1,109 @@
+@attribute [Route(Routes.NUEVO_ONA)]
+@attribute [Route($"{Routes.EDITAR_ONA}{{Id:int}}")]
+@layout AdminLayout
+@using Microsoft.AspNetCore.Authorization
+@using Infractruture.Interfaces;
+@using SharedApp.Dtos
+
+<EditForm Model="onas" OnValidSubmit="RegistrarONA" class="pt-4">
+	<DataAnnotationsValidator />
+
+	<!-- Título -->
+	<div class="ds-title-section">
+		<h2 class="ds-title-h2">Administración <span>Información Principal ONA</span></h2>
+	</div>
+
+	<!-- Cuerpo -->
+	<div class="ds-content-section full">
+
+		<div class="row py-2">
+			<!-- Columna 1 -->
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Nombre de Organización Nacional de Acreditación</label>
+				<InputText @bind-Value="onas.RazonSocial" class="form-control inter-regular-normal-comet-14px" placeholder="Nombre de Organización Nacional de Acreditación" style="margin-top: 2% !important;" />
+				<ValidationMessage For="(() => onas.RazonSocial)" />
+			</div>
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Nombre de País origen del ONA</label>
+				<select class="form-control inter-regular-normal-comet-14px" @onchange="ActualizarPais" value="@onas.IdHomologacionPais" style="margin-top: 2% !important;">
+					<option value= Constantes.VACIO>Seleccione un país</option>
+					@foreach (var pais in paises)
+					{
+						<option value="@pais.IdHomologacionPais">@pais.Pais</option>
+					}
+				</select>
+				<ValidationMessage For="(() => onas.IdHomologacionPais)" />
+			</div>
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Correo Electrónico de ONA</label>
+				<InputText @bind-Value="onas.Correo" class="form-control inter-regular-normal-comet-14px" placeholder="Correo Electrónico de ONA" style="margin-top: 2% !important;" />
+				<ValidationMessage For="(() => onas.Correo)" />
+			</div>
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Sitio web de ONA</label>
+				<InputText @bind-Value="onas.PaginaWeb" class="form-control inter-regular-normal-comet-14px" placeholder="Sitio web de ONA" style="margin-top: 2% !important;" />
+				<ValidationMessage For="(() => onas.PaginaWeb)" />
+			</div>
+			<div class="form-row py-2">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Ícono</label>
+				<div class="col" style="margin-top: 2% !important;">
+					<InputFile @bind-Value="uploadedFile" style="margin-top: 2% !important;"
+							   class="form-control inter-regular-normal-comet-14px"
+							   placeholder="Icono de la organización"
+							   OnChange="e => OnInputFileChange(e, onas.IdONA)" />
+					<ValidationMessage For="(() => onas.UrlIcono)" />
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Siglas del ONA</label>
+				<InputText @bind-Value="onas.Siglas" class="form-control inter-regular-normal-comet-14px" placeholder="Siglas del ONA" style="margin-top: 2% !important;" />
+				<ValidationMessage For="(() => onas.Siglas)" />
+			</div>
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Ciudad que reside ONA</label>
+				<InputText @bind-Value="onas.Ciudad" class="form-control inter-regular-normal-comet-14px" placeholder="Ciudad que reside ONA" style="margin-top: 2% !important;" />
+				<ValidationMessage For="(() => onas.Ciudad)" />
+			</div>
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Dirección de ONA</label>
+				<InputText @bind-Value="onas.Direccion" class="form-control inter-regular-normal-comet-14px" placeholder="Dirección de ONA" style="margin-top: 2% !important;" />
+				<ValidationMessage For="(() => onas.Direccion)" />
+			</div>
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Teléfono de contacto de ONA</label>
+				<InputText @bind-Value="onas.Telefono" class="form-control inter-regular-normal-comet-14px" placeholder="Teléfono de contacto de ONA" style="margin-top: 2% !important;" />
+				<ValidationMessage For="(() => onas.Telefono)" />
+			</div>
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">URL Logo</label>
+				<InputText @bind-Value="onas.UrlLogo" class="form-control inter-regular-normal-comet-14px" placeholder="URL Logo" style="margin-top: 2% !important;" />
+				<ValidationMessage For="(() => onas.UrlLogo)" />
+			</div>
+
+		</div>
+	</div>
+
+	<div class="ds-buttons-content">
+		<a @onclick="Regresar">
+			<div class="ds-btn-general ds-btn-red">
+				<img class="icons" src="admin/img/icons.svg" alt="Icons">
+				<div class="button-1 headingheadline4-h4">Regresar</div>
+			</div>
+		</a>
+		<div class="save-button-container">
+			<Button @ref="saveButton" type="ButtonType.Submit" class="ds-btn-general ds-btn-blue">
+				<div class="button-3 headingheadline4-h4">Guardar</div>
+			</Button>
+		</div>
+	</div>
+
+</EditForm>
+

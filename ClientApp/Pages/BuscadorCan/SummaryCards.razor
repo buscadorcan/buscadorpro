@@ -1,0 +1,42 @@
+@using Newtonsoft.Json
+
+<div class="content-data">
+    <div class="titulo">
+        <div class="icono b-neutral-gray">
+            <img src="/images/ico-empresas.svg" width="20" height="21" alt="Empresas certificadas por pais de la CAN">
+        </div>
+        <h3 class="c-black poppins-regular">
+            Organismos Evaluadores de la Conformidad acreditados de la CAN
+        </h3>
+    </div>
+
+    <div class="data-empresas m-top-2">
+        <div class="info-empresa totales">
+            <p class="inter-medium">Total<br>Resultados</p>
+            <span class="c-black poppins-medium">@TotalOrganismos</span>
+        </div>
+        @foreach (var item in PanelONA)
+        {
+            var icono = string.Empty;
+            if (!string.IsNullOrWhiteSpace(item.Icono) && item.Icono.TrimStart().StartsWith("{"))
+            {
+                var deserialized = JsonConvert.DeserializeObject<Dictionary<string, string>>(item.Icono);
+                if (deserialized?.ContainsKey("filePath") == true)
+                {
+                    // Quitar la barra inicial del filePath
+                    var filePath = deserialized["filePath"].TrimStart('/');
+
+                    // Concatenar UrlBaseAdmin con el filePath
+                    icono = $"{UrlBasesOptions.UrlBaseBuscador}{filePath}";
+                }
+            }
+            <div class="info-empresa">
+                <div class="logo-empresa" style="background: url('@icono') no-repeat center"></div>
+                <p class="inter-regular">@item.Pais</p>
+                <span class="c-black poppins-medium">@item.NroOrg</span>
+            </div>
+           
+        }
+    </div>
+
+</div>

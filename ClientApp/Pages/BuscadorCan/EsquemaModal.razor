@@ -1,0 +1,31 @@
+<Tabs @ref="tabs" EnableFadeEffect="true" ActiveTabIndex="@activeTabIndex">
+    @if (listaEsquemas != null && listaEsquemas.Any() && resultData != null)
+    {
+        int index = 0;
+        @foreach (var esquema in listaEsquemas)
+        {
+            <Tab Active="@(activeTabIndex == index)" style="font-size: 11px !important;">
+                <TitleTemplate>
+                    <Tooltip Title="@esquema.TooltipWeb">@esquema.MostrarWeb</Tooltip>
+                </TitleTemplate>
+                <Content>
+                    <div class="py-2">
+                        <EsquemaModalGrillaTab @key="esquema.IdEsquema"
+                                               IdEsquema="@esquema.IdEsquema"
+                                               idONA="@resultData.IdONA"
+                                               VistaPK="@resultData.VistaPK"
+                                               VistaFK="@resultData.VistaFK"
+                                               Texto="@resultData.Texto" />
+                    </div>
+                </Content>
+            </Tab>
+            index++;
+        }
+    }
+    else
+    {
+        <div class="alert alert-warning" style="font-size: 11px !important;">
+            No se encontraron esquemas o los datos no están cargados correctamente.
+        </div>
+    }
+</Tabs>

@@ -1,0 +1,1 @@
+QR;C:\Users\Dell\source\repos\BuscadorCan\WebApp\WebApp.csproj¢net8.0òCSharp12

@@ -1,0 +1,173 @@
+@attribute [Route(Routes.USUARIO)]
+@layout AdminLayout
+@using BlazorBootstrap
+@using Microsoft.AspNetCore.Authorization
+@using SharedApp.Dtos
+@inject NavigationManager NavigationManager
+
+
+<PageTitle>Usuarios</PageTitle>
+
+<div class="ds-title-section">
+
+	<h2 class="ds-title-h2">Administración <span>Usuarios</span></h2>
+
+	<!-- Botón Nuevo -->
+	@if (!isRolRead)
+	{
+		<div class="ds-buttons-content">
+			<!-- Botón Exportar a Excel -->
+			<a href="javascript:void(0)" class="ds-btn-general ds-btn-blue" @onclick="ExportarExcel">
+				<img src="images/admin/ico-excel-blue.svg"
+					 width="19" height="19"> Excel
+			</a>
+
+			<!-- Botón Exportar a PDF -->
+			<a href="javascript:void(0)" class="ds-btn-general ds-btn-red" @onclick="ExportarPDF">
+				<img src="images/admin/ico-file-pdf-ref.svg"
+					 width="19" height="19">PDF
+			</a>
+
+			<!-- Botón Crear Nuevo -->
+
+			<a href="@Routes.NUEVO_USUARIO" class="ds-btn-general ds-btn-yellow">
+				<div class="button-3 headingheadline4-h4">Nuevo usuario</div>
+			</a>
+		</div>
+	}
+
+</div>
+
+<div class="table-responsive">
+	@if (isLoading)
+	{
+		<div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+			<div class="spinner-border text-primary" role="status">
+				<span class="visually-hidden">Cargando...</span>
+			</div>
+		</div>
+	}
+	else
+	{
+		<table class="general table">
+			<thead>
+				<tr>
+					<th @onclick="() => OrdenarPor(nameof(UsuarioDto.Nombre))">
+						Nombre @(sortColumn == nameof(UsuarioDto.Nombre) ? (sortAscending ? Constantes.FLECHA_ARRIBA : Constantes.FLECHA_ABAJO) : Constantes.VACIO)
+					</th>
+					<th @onclick="() => OrdenarPor(nameof(UsuarioDto.Apellido))">
+						Apellido @(sortColumn == nameof(UsuarioDto.Apellido) ? (sortAscending ? Constantes.FLECHA_ARRIBA : Constantes.FLECHA_ABAJO) : Constantes.VACIO)
+					</th>
+					<th @onclick="() => OrdenarPor(nameof(UsuarioDto.Telefono))">
+						Teléfono @(sortColumn == nameof(UsuarioDto.Telefono) ? (sortAscending ? Constantes.FLECHA_ARRIBA : Constantes.FLECHA_ABAJO) : Constantes.VACIO)
+					</th>
+					<th @onclick="() => OrdenarPor(nameof(UsuarioDto.Email))">
+						Email @(sortColumn == nameof(UsuarioDto.Email) ? (sortAscending ? Constantes.FLECHA_ARRIBA : Constantes.FLECHA_ABAJO) : Constantes.VACIO)
+					</th>
+					<th @onclick="() => OrdenarPor(nameof(UsuarioDto.Rol))">
+						Rol @(sortColumn == nameof(UsuarioDto.Rol) ? (sortAscending ? Constantes.FLECHA_ARRIBA : Constantes.FLECHA_ABAJO) : Constantes.VACIO)
+					</th>
+					<th @onclick="() => OrdenarPor(nameof(UsuarioDto.RazonSocial))">
+						Razón Social @(sortColumn == nameof(UsuarioDto.RazonSocial) ? (sortAscending ? Constantes.FLECHA_ARRIBA : Constantes.FLECHA_ABAJO) : Constantes.VACIO)
+					</th>
+					<th @onclick="() => OrdenarPor(nameof(UsuarioDto.Estado))">
+						Estado @(sortColumn == nameof(UsuarioDto.Estado) ? (sortAscending ? Constantes.FLECHA_ARRIBA : Constantes.FLECHA_ABAJO) : Constantes.VACIO)
+					</th>
+					<th>Editar</th>
+					<th>Eliminar</th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (listaUsuarios != null && listaUsuarios.Any())
+				{
+					@foreach (var usuario in PaginatedItems)
+					{
+						<tr>
+							<td title="@usuario.Nombre">@usuario.Nombre</td>
+							<td title="@usuario.Apellido">@usuario.Apellido</td>
+							<td title="@usuario.Telefono">@usuario.Telefono</td>
+							<td title="@usuario.Email">@usuario.Email</td>
+							<td title="@usuario.Rol">@usuario.Rol</td>
+							<td title="@usuario.RazonSocial">@usuario.RazonSocial</td>
+							<td>
+								@if (usuario.Estado == Constantes.ACTIVO)
+								{
+									<span class="estado-activo">✔</span>
+								}
+								else
+								{
+									<span class="estado-inactivo">✖</span>
+								}
+							</td>
+							<td>
+								<Tooltip Title="Editar registro">
+									<Button Type="ButtonType.Link"
+											Color="ButtonColor.Secondary"
+											Outline="true"
+											Size="ButtonSize.Small"
+											Disabled="isRolRead"
+											@onclick=@(() => EditarUsuario(usuario))>
+										<Icon Name="IconName.PencilSquare" />
+									</Button>
+								</Tooltip>
+							</td>
+							<td>
+								<Tooltip Title="Eliminar registro">
+									<Button id=Constantes.BTN_DELETE
+											@ref="saveButton"
+											Type="ButtonType.Button"
+											Color="ButtonColor.Danger"
+											Outline="true"
+											Size="ButtonSize.Small"
+											Disabled="isRolRead"
+											@onclick=@(() => OpenDeleteModal(usuario.IdUsuario))>
+										<Icon Name="IconName.Trash" />
+									</Button>
+								</Tooltip>
+							</td>
+						</tr>
+					}
+				}
+				else
+				{
+					<tr>
+						<td colspan="9">No hay datos disponibles.</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+
+		<!-- Controles de paginación -->
+		<div class="pagination-container">
+			<button class="btn btn-primary btn-sm" @onclick="PreviousPage" disabled="@(!CanGoPrevious)">⏪</button>
+			<span class="pagination-text inter-regular-normal-comet-14px">
+				Página @CurrentPage de @TotalPages
+			</span>
+			<button class="btn btn-primary btn-sm" @onclick="NextPage" disabled="@(!CanGoNext)">⏩</button>
+		</div>
+	}
+</div>
+
+
+
+@if (showModal)
+{
+	<div class="modal show d-block" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title inter-regular-normal-comet-14px">Confirmar Eliminación</h5>
+					<button type="button" class="btn-close inter-regular-normal-comet-14px" aria-label="Close"
+							@onclick="CloseModal"></button>
+				</div>
+				<div class="modal-body">
+					<p class="label valign-text-middle inter-regular-normal-comet-14px">¿Está seguro que desea eliminar este registro?</p>
+				</div>
+				<div class="modal-footer">
+					<Button Color="ButtonColor.Danger" @onclick=@(() => ConfirmDelete())>Eliminar</Button>
+					<Button Color="ButtonColor.Secondary" @onclick=@(() => CloseModal())>Cancelar</Button>
+				</div>
+			</div>
+		</div>
+	</div>
+}

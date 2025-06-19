@@ -1,0 +1,134 @@
+@attribute [Route(Routes.NUEVO_USUARIO)]
+@attribute [Route(Routes.EDITAR_USAURIO)]
+@layout AdminLayout
+@using Microsoft.AspNetCore.Authorization;
+
+<PageTitle>Formulario Usuarios</PageTitle>
+
+<EditForm Model="usuario" OnValidSubmit="RegistrarUsuario" class="pt-4">
+	<DataAnnotationsValidator />
+
+	<!-- Título -->
+	<div class="ds-title-section">
+		<h2 class="ds-title-h2">Administración <span>>Usuario del Sistema</span></h2>
+	</div>
+
+	<div class="ds-content-section full">
+
+		<!-- Primera fila: Rol y Razón Social -->
+		<div class="row py-2">
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Rol</label>
+				<div class="col custom-dropdown" style="margin-top: 2% !important;">
+					@if (listaRoles != null && listaRoles.Any() && usuario != null)
+					{
+						<Dropdown AutoClose="true" class="styled-dropdown">
+							<DropdownToggleButton class="dropdown-btn inter-regular-normal-comet-14px">
+								@usuario.Rol
+							</DropdownToggleButton>
+							<DropdownMenu class="dropdown-menu-styled">
+								@foreach (var rol in listaRoles)
+								{
+									<DropdownItem class="dropdown-item-styled inter-regular-normal-comet-14px" @onclick="@(() => OnAutoCompleteChanged(rol.Rol,rol.IdHomologacionRol))">@rol.Rol</DropdownItem>
+								}
+							</DropdownMenu>
+						</Dropdown>
+					}
+					else
+					{
+						<p class="label valign-text-middle inter-regular-normal-comet-14px">Cargando roles...</p>
+					}
+					<ValidationMessage For="(() => usuario.Rol)" />
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Razón Social</label>
+				<div class="col" style="margin-top: 2% !important;">
+					@if (listaOna != null && listaOna.Any() && usuario != null)
+					{
+						<Dropdown AutoClose="true" class="styled-dropdown">
+							<DropdownToggleButton class="dropdown-btn inter-regular-normal-comet-14px">
+								@usuario.RazonSocial
+							</DropdownToggleButton>
+							<DropdownMenu class="dropdown-menu-styled">
+								@foreach (var ona in listaOna)
+								{
+									<DropdownItem class="dropdown-item-styled inter-regular-normal-comet-14px" @onclick="@(() => OnAutoCompleteRazonSocOnaChanged(ona.RazonSocial, ona.IdONA))">@ona.RazonSocial</DropdownItem>
+								}
+							</DropdownMenu>
+						</Dropdown>
+					}
+					else
+					{
+						<p class="label valign-text-middle inter-regular-normal-comet-14px">Cargando Razon Social...</p>
+					}
+					<ValidationMessage For="(() => usuario.RazonSocial)" />
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Nombre</label>
+				<div class="col">
+					<InputText @bind-Value="usuario.Nombre" class="form-control inter-regular-normal-comet-14px" placeholder="Nombre..." style="margin-top: 2% !important;" />
+					<ValidationMessage For="(() => usuario.Nombre)" />
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Apellido</label>
+				<div class="col">
+					<InputText @bind-Value="usuario.Apellido" class="form-control inter-regular-normal-comet-14px" placeholder="Apellido..." style="margin-top: 2% !important;" />
+					<ValidationMessage For="(() => usuario.Apellido)" />
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Email</label>
+				<div class="col">
+					<InputText @bind-Value="usuario.Email" class="form-control inter-regular-normal-comet-14px" style="margin-top: 2% !important;"
+							   placeholder="Email..."
+							   @oninput="ValidateEmail" />
+					<ValidationMessage For="(() => usuario.Email)" />
+					@if (!string.IsNullOrEmpty(emailValidationMessage))
+					{
+						<small class="text-danger">@emailValidationMessage</small>
+					}
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Teléfono</label>
+				<div class="col">
+					<InputText @bind-Value="usuario.Telefono" class="form-control inter-regular-normal-comet-14px" placeholder="+34 654321987" style="margin-top: 2% !important;" />
+					<ValidationMessage For="(() => usuario.Telefono)" />
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Clave</label>
+				<div class="col">
+					<InputText @bind-Value="usuario.Clave" type="password" placeholder="Clave..." style="margin-top: 2% !important;" class="form-control inter-regular-normal-comet-14px" />
+					<ValidationMessage For="(() => usuario.Clave)" />
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="ds-buttons-content">
+		<a @onclick="Regresar">
+			<div class="ds-btn-general ds-btn-red">
+				<img class="icons" src="admin/img/icons.svg" alt="Icons">
+				<div class="button-1 headingheadline4-h4">Regresar</div>
+			</div>
+		</a>
+		<div class="save-button-container">
+			<Button @ref="saveButton" type="ButtonType.Submit" class="ds-btn-general ds-btn-blue"><div class="button-3 headingheadline4-h4">Guardar</div></Button>
+		</div>
+	</div>
+
+</EditForm>
+
+

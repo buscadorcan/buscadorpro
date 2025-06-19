@@ -1,0 +1,43 @@
+# API Settings
+API_SECRET=andino-0f8fad5b-d9cb-469f-a165-70867728950e
+
+# Email Settings
+SMTP_SERVER=smtp.favia.com.ec
+SMTP_PORT=587
+SMTP_USER=info@favia.com.ec
+SMTP_PASS="Ul#)Xea9"
+SMTP_ENABLE_SSL=false
+SMTP_FROM=info@favia.com.ec
+
+# Database Connection Strings
+LOG_PATH=../.devcontainer/Log/
+DB_CONNECTION_STRING=data source=../.devcontainer/dataBase/Ecuador.db
+DB_SQLITE=data source=../.devcontainer/dataBase/Colombia.db
+DB_MYSQL=Server=localhost;Port=3306;Database=PERU;Uid=root;Pwd=pat_mic_DBKEY;
+DB_MSSQL=Server=localhost,1434;Database=SAE;User=SA;Password=pat_mic_DBKEY;TrustServerCertificate=True;
+DB_OTHER=Server=localhost,1434;Initial Catalog=SAE;User ID=sa;Password=pat_mic_DBKEY;TrustServerCertificate=True
+DB_CAN_DB=Server=DESKTOP-U3FN79I\\SQLEXPRESS;Database=CAN;Trusted_Connection=True; TrustServerCertificate=True
+DB_CAN_DBX=Server=DESKTOP-JNO643V\\SQLEXPRESS;Initial Catalog=CAN_DB;User ID=sa;Password=12345678;TrustServerCertificate=True
+DB_CAN_DBP=Server=INV-0218;Initial Catalog=CAN_DB;User ID=sa;Password=3n3R012@.2022;TrustServerCertificate=True
+
+# Thesaurus
+THESAURUS_SAVE_PATH=tsesn.xml
+THESAURUS_BAT_PATH=tsesn.bat
+
+# Serilog Settings
+LOG_LEVEL_DEFAULT=Information
+LOG_LEVEL_MICROSOFT=Warning
+LOG_LEVEL_SYSTEM=Warning
+SERILOG_SINK_NAME_0=Console
+SERILOG_SINK_0_TEMPLATE=[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext,-40} › {Message:lj}{NewLine}{Exception}
+SERILOG_SINK_NAME_1=File
+SERILOG_SINK_1_PATH=Logs/log-.txt
+SERILOG_SINK_1_ROLLING=Day
+
+# Google OAuth
+GOOGLE_OAUTH_SEND=https://www.googleapis.com/auth/gmail.send
+GOOGLE_OAUTH_COMPOSE=https://www.googleapis.com/auth/gmail.compose
+
+# MySQL Password and Database
+MYSQL_PASSWORD=pat_mic_DBKEY
+MYSQL_DATABASE=PERU

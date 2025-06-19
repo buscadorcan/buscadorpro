@@ -1,0 +1,147 @@
+@attribute [Route(Routes.vALIDACION)]
+@layout AdminLayout
+@using OfficeOpenXml
+@using SharedApp.Dtos
+@inject IJSRuntime JSRuntime
+@using System.IO
+@using System.Text
+@using iTextSharp.text
+@using iTextSharp.text.pdf
+
+<PageTitle>Homologación</PageTitle>
+
+<div class="ds-title-section">
+	<h2 class="ds-title-h2">Administración <span>Validación de Campos</span></h2>
+</div>
+
+<div class="row py-2">
+
+	<div class="col-md-4">
+		<div>
+			<label class="label valign-text-middle inter-regular-normal-comet-16px">Ona</label>
+		</div>
+		<select id="onaSelect" class="form-control inter-regular-normal-comet-14px" @onchange="CambiarSeleccionOna" style="margin-top: 2% !important;">
+			<option value=Constantes.VACIO selected disabled>Seleccionar Ona</option>
+			@if (listaONAs != null)
+			{
+				@foreach (var opcion in listaONAs)
+				{
+					<option value="@opcion.IdONA">@opcion.Siglas</option>
+				}
+			}
+		</select>
+	</div>
+	<div class="col-md-4">
+		<div>
+			<label class="label valign-text-middle inter-regular-normal-comet-16px">Esquemas</label>
+		</div>
+		<div class="form-group" style="margin-top: 2% !important;">
+			<div class="form-group">
+				<select id="esquemaSelect" class="form-control inter-regular-normal-comet-14px"
+						@onchange="async (e) => await HandleEsquemaSelectionChange(e)">
+					<option value=Constantes.VACIO selected disabled>Seleccionar ESQ</option>
+					@if (listaEsquemasOna != null)
+					{
+						@foreach (var opcion in listaEsquemasOna)
+						{
+							<option value="@opcion.IdEsquema">
+								@if (NombresVistas != null && NombresVistas.Any(c => c.Equals(opcion.MostrarWeb)))
+								{
+									<Icon Name="IconName.Check" />
+								}
+								@opcion.MostrarWeb
+							</option>
+						}
+					}
+				</select>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div>
+			<label class="label valign-text-middle inter-regular-normal-comet-16px">Vista Origen</label>
+		</div>
+		<input type="text" class="form-control inter-regular-normal-comet-14px" placeholder=Constantes.VACIO @bind="nombreSugerido" style="margin-top: 2% !important;" />
+	</div>
+</div>
+
+
+<div class="col-md-12">
+	<div class="ds-buttons-content">
+		@if (listasHevd?.Count > 0)
+		{
+			<!-- Botón Exportar a Excel -->
+			<a href="javascript:void(0)" class="ds-btn-general ds-btn-blue" @onclick="ExportarExcel">
+				<img src="images/admin/ico-excel-blue.svg"
+					 width="19" height="19"> Excel
+			</a>
+
+			<!-- Botón Exportar a PDF -->
+			<a href="javascript:void(0)" class="ds-btn-general ds-btn-red" @onclick="ExportarPDF">
+				<img src="images/admin/ico-file-pdf-ref.svg"
+					 width="19" height="19">PDF
+			</a>
+
+			<!-- Botón Validar Registro -->
+			<Button id="btnGuardar" @ref="validateButton" class="ds-btn-general ds-btn-yellow" @onclick="async () => await ValidarDatos()">
+				<div class="button-3 headingheadline4-h4">Grabar Homologación</div>
+			</Button>
+		}
+	</div>
+</div>
+
+<div class="table-responsive">
+	@if (isLoading)
+	{
+		<div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+			<div class="spinner-border text-primary" role="status">
+				<span class="visually-hidden">Cargando...</span>
+			</div>
+		</div>
+	}
+	else
+	{
+		<table class="general table">
+			<thead>
+				<tr>
+					<th style="width: 50%;">Nombre Campo Esquema</th>
+					<th style="width: 50%;">Nombre Campo Vista</th>
+					<th style="width: 20%;">Existe</th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (listasHevd != null && listasHevd.Any())
+				{
+					@foreach (var esquema in listasHevd)
+					{
+						<tr>
+							<td>@esquema.NombreEsquema</td>
+							<td>
+								<input class="form-control inter-regular-normal-comet-14px"
+									   @bind="esquema.NombreVista"
+									   disabled="@enabledCeldas" />
+							</td>
+							<td>
+								@if (esquema.IsValid)
+								{
+									<span class="estado-activo">✔</span>
+								}
+								else
+								{
+									<span class="estado-inactivo">✖</span>
+								}
+							</td>
+						</tr>
+					}
+				}
+				else
+				{
+					<tr>
+						<td colspan="3">No hay datos disponibles.</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+</div>
+

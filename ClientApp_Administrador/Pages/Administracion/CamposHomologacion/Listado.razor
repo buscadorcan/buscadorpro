@@ -1,0 +1,131 @@
+@attribute [Route(Routes.CAMPO_HOMOLOGACION)]
+@layout AdminLayout
+@using System.IO
+@using System.Text
+@using OfficeOpenXml
+@using SharedApp.Dtos
+@using iTextSharp.text
+@using iTextSharp.text.pdf
+
+<PageTitle>Campos Homologación</PageTitle>
+
+<div class="ds-title-section">
+	<!-- Título -->
+	<h2 class="ds-title-h2">Administración <span>campos de Homologación</span></h2>
+
+	<div class="ds-buttons-content">
+		@if (homologacionSelected != null)
+		{
+
+			<!-- Botón Exportar a Excel -->
+			<a href="javascript:void(0)" class="ds-btn-general ds-btn-blue" @onclick="ExportarExcel">
+				<img src="images/admin/ico-excel-blue.svg"
+					 width="19" height="19"> Excel
+			</a>
+
+			<!-- Botón Exportar a PDF -->
+			<a href="javascript:void(0)" class="ds-btn-general ds-btn-red" @onclick="ExportarPDF">
+				<img src="images/admin/ico-file-pdf-ref.svg"
+					 width="19" height="19">PDF
+			</a>
+
+			@if (IsAdd)
+			{
+				<!-- Botón Agregar Registro -->
+				<a class="ds-btn-general ds-btn-yellow" href="@($"/nuevo-campos-homologacion/{homologacionSelected?.IdHomologacion}")">
+					<div class="button-3 headingheadline4-h4">Agregar Registro</div>
+				</a>
+			}
+		}
+	</div>
+</div>
+
+<div class="form-group">
+	<label for="grupoHomologacionSelect" class="label valign-text-middle inter-regular-normal-comet-16px">Grupo de Homologación</label>
+	<select id="grupoHomologacionSelect" class="form-control inter-regular-normal-comet-14px" @onchange="OnAutoCompleteChangedHandler" style="margin-top: 2% !important; width: 338.8px !important;">
+		<option value=Constantes.VACIO selected disabled>Seleccione Grupo de Homologación</option>
+		@if (listaVwHomologacion != null)
+		{
+			@foreach (var g in listaVwHomologacion)
+			{
+				<option value="@g.IdHomologacion">@g.MostrarWeb</option>
+			}
+		}
+	</select>
+</div>
+<div class="ds-content-section">
+
+	@if (isLoading)
+	{
+		<div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+			<div class="spinner-border text-primary" role="status">
+				<span class="visually-hidden">Cargando...</span>
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="table-responsive">
+			<div class="general table">
+
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Nombre Homologado</th>
+							<th>Mostrar Web</th>
+							<th>Tooltip Web</th>
+							<th>Máscara</th>
+							<th>Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in homologaciones)
+						{
+							<tr>
+								<td>@item.NombreHomologado</td>
+								<td>@item.MostrarWeb</td>
+								<td>@item.TooltipWeb</td>
+								<td>@item.MascaraDato</td>
+								<td>
+									<Button Color="ButtonColor.Danger" Outline="true" 
+									     @onclick="() => OpenDeleteModal(item.IdHomologacion)" Size="ButtonSize.Small">
+										<Icon Name="IconName.Trash3" />
+									</Button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+
+				<!-- Controles de paginación -->
+				<div class="pagination-container">
+					<button class="btn btn-primary btn-sm" @onclick="Anterior" disabled="@(!(currentPage > 1))">⏪</button>
+					<span class="pagination-text inter-regular-normal-comet-14px">Página @currentPage de @totalPages</span>
+					<button class="btn btn-primary btn-sm" @onclick="Siguiente" disabled="@(!(currentPage < totalPages))">⏩</button>
+				</div>
+			</div>
+		</div>
+	}
+</div>
+
+@if (showModal)
+{
+	<div class="modal show d-block" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title inter-regular-normal-comet-14px">Confirmar Eliminación</h5>
+					<button type="button" class="btn-close inter-regular-normal-comet-14px" aria-label="Close"
+							@onclick="CloseModal"></button>
+				</div>
+				<div class="modal-body">
+					<p class="label valign-text-middle inter-regular-normal-comet-14px">¿Está seguro que desea eliminar este registro?</p>
+				</div>
+				<div class="modal-footer">
+					<Button Color="ButtonColor.Danger" @onclick=@(() => ConfirmDelete())>Eliminar</Button>
+					<Button Color="ButtonColor.Secondary" @onclick=@(() => CloseModal())>Cancelar</Button>
+				</div>
+			</div>
+		</div>
+	</div>
+}

@@ -1,0 +1,41 @@
+@attribute [Route(Routes.CAMBIAR_CLAVE)]
+@layout AdminLayout
+@using Microsoft.AspNetCore.Authorization;
+@attribute [Authorize]
+
+<PageTitle>Usuario</PageTitle>
+<Toasts class="p-3" Messages="messages" AutoHide="true" Delay="6000" Placement="ToastsPlacement.TopRight" />
+
+<EditForm Model="usuario" OnValidSubmit="OnCambiarClave" class="pt-4">
+	<DataAnnotationsValidator />
+
+	<div class="ds-title-section">
+		<!-- Título -->
+		<h2 class="ds-title-h2">Administración <span>Cambiar Contraseña</span></h2>
+	</div>
+	<div class="ds-content-section full">
+		<!-- Clave Actual-->
+		<div class="row py-2">
+			<div class="col-md-12">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Clave Actual</label>
+				<div class="col">
+					<InputText @bind-Value="usuario.Clave" type="password" placeholder="Clave actual..." class="form-control inter-regular-normal-comet-14px" style="margin-top: 2% !important;" />
+					<ValidationMessage For="(() => usuario.Clave)" />
+				</div>
+			</div>
+			<div class="col-md-12">
+				<label class="label valign-text-middle inter-regular-normal-comet-16px">Clave Nueva</label>
+				<div class="col">
+					<InputText @bind-Value="usuario.ClaveNueva" type="password" placeholder="Clave Nueva..." class="form-control inter-regular-normal-comet-14px" style="margin-top: 2% !important;" />
+					<ValidationMessage For="(() => usuario.ClaveNueva)" />
+				</div>
+			</div>
+		</div>
+
+		<div class="ds-buttons-content">
+			<Button @ref="saveButton" Type="ButtonType.Submit" class="ds-btn-general ds-btn-blue">
+				<div class="button-3 headingheadline4-h4">Cambiar</div>
+			</Button>
+		</div>
+	</div>
+</EditForm>

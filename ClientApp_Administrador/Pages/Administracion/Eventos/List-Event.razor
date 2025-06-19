@@ -1,0 +1,161 @@
+@attribute [Route(Routes.EVENTOS)]
+@layout AdminLayout
+@using Microsoft.AspNetCore.Authorization
+@using SharedApp.Data
+@using SharedApp.Dtos
+@attribute [Authorize]
+
+<div class="ds-title-section">
+	<h2 class="ds-title-h2">Administración <span>Lista de eventos del sistema</span></h2>
+</div>
+
+<div class="row mt-5">
+	<div class="col-md-3 mt-2">
+		<select class="form-select" @onchange="SelectValue">
+			<option>Seleccione el reporte</option>
+			@if (listaRep != null)
+			{
+				@foreach (var opcion in listaRep)
+				{
+					<option value="@opcion.vw_EventUser">@opcion.vw_Text</option>
+				}
+			}
+		</select>
+	</div>
+	<div class="col-md-3 mt-2">
+		<input type="date" class="form-control" @bind="fini" placeholder="Fecha Inicio">
+	</div>
+	<div class="col-md-3 mt-2">
+		<input type="date" class="form-control" @bind="ffin" placeholder="Fecha Fin">
+	</div>
+	<div class="col-md-3">
+		<Button id="btnSearch" Type="ButtonType.Button" Color="ButtonColor.Primary" Outline="true" @onclick="SearchEvent" disabled="@isLoading">
+			@if (isLoading)
+			{
+				<span class="ms-2">Cargando...</span>
+			}
+			else
+			{
+				<Icon Name="IconName.Search" />
+				<span class="ms-2">Buscar</span>
+			}
+		</Button>
+	</div>
+</div>
+
+<div class="ds-buttons-content">
+	<!-- Grupo de botones de exportación -->
+	<!-- Botón Exportar a Excel -->
+	<div class="d-flex">
+		<a href="javascript:void(0)" class="ds-btn-general ds-btn-blue" @onclick="ExportarExcel">
+			<img src="images/admin/ico-excel-blue.svg"
+				 width="19" height="19"> Excel
+		</a>
+
+		<!-- Botón Exportar a PDF -->
+		<a href="javascript:void(0)" class="ds-btn-general ds-btn-red" @onclick="ExportarPDF">
+			<img src="images/admin/ico-file-pdf-ref.svg"
+				 width="19" height="19">PDF
+		</a>
+	</div>
+
+
+	<div>
+		<!-- Botón ver graficas -->
+		<Button id="btnviewChart" Type="ButtonType.Button" Color="ButtonColor.Secondary" @onclick="verReport">
+			<Icon Name="IconName.BarChart" />
+			<span class="ms-2">Ver reporte</span>
+		</Button>
+
+		<Button id="btnDeleteAll" Type="ButtonType.Button" Color="ButtonColor.Danger" disabled="@(!listasEvent.Any())" @onclick="DeleteEventAll">
+			<Icon Name="IconName.Trash" />
+		</Button>
+	</div>
+
+</div>
+
+
+<div class="ds-content-section full">
+	<div class="table-responsive">
+		<table class="general table">
+			<thead>
+				<tr>
+					@foreach (var column in new[]
+										{
+					(nameof(EventUserDto.CodigoEvento), "Id"),
+					(nameof(EventUserDto.OnaSiglas), "Siglas"),
+					("NombreCompleto", "Nombre"),
+					(nameof(EventUserDto.Pagina), "Pagina"),
+					(nameof(EventUserDto.PaginaControl), "P. Control"),
+					})
+					{
+						<th @onclick="() => OrdenarPor(column.Item1)" style="cursor: pointer;">
+							@column.Item2 @(sortColumn == column.Item1 ? (sortAscending ? Constantes.FLECHA_ARRIBA : Constantes.FLECHA_ABAJO) :  Constantes.VACIO)
+						</th>
+					}
+
+					@if (selectReport == Constantes.VIEW_EVENT_SEARCH)
+					{
+						<th>Texto Buscar</th>
+						<th>Exacta Buscar</th>
+						<th>F. País</th>
+						<th>F. ONA</th>
+					}
+
+					<th>Fecha</th>
+					<th>Eliminar</th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (listasEvent != null && listasEvent.Any())
+				{
+					@foreach (var even in PaginatedItems)
+					{
+						<tr>
+							<td>@even.CodigoEvento</td>
+							<td>@even.OnaSiglas</td>
+							<td>@even.Nombre @even.Apellido</td>
+							<td>@even.Pagina</td>
+							<td>@even.PaginaControl</td>
+
+							@if (selectReport == Constantes.VIEW_EVENT_SEARCH)
+							{
+								<td>@even.TextoBuscar</td>
+								<td>@(even.ExactaBuscar != "false" ? Constantes.SI_LITERAL : Constantes.NO_LITERAL)</td>
+								<td>@even.FiltroPais</td>
+								<td>@even.FiltroOna</td>
+							}
+
+							<td>@even.FechaCreacion.ToString(Constantes.FORMATO_FECHA)</td>
+							<td>
+								<Button Color="ButtonColor.Danger" Outline="true" Size="ButtonSize.Small" @onclick="() => DeleteByIdAsync(even.CodigoEvento)">
+									<Icon Name="IconName.Trash3" />
+								</Button>
+							</td>
+						</tr>
+					}
+				}
+				else
+				{
+					<tr>
+						<td colspan="@(selectReport == Constantes.VIEW_EVENT_SEARCH ? 11 : 7)">No hay datos disponibles.</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+
+		<!-- Controles de paginación -->
+		<div class="pagination-container">
+			<button class="btn btn-primary btn-sm" @onclick="PreviousPage" disabled="@(!CanGoPrevious)">⏪</button>
+			<span class="pagination-text inter-regular-normal-comet-14px">Página @CurrentPage de @TotalPages</span>
+			<button class="btn btn-primary btn-sm" @onclick="NextPage" disabled="@(!CanGoNext)">⏩</button>
+		</div>
+
+	</div>
+</div>
+
+
+
+
+
+

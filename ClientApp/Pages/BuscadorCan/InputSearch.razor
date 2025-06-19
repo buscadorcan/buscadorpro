@@ -1,0 +1,208 @@
+@using BlazorBootstrap
+
+
+<Toasts Placement="@toastsPlacement" />
+
+<div class="content-buscador">
+    <div class="div-input-text">
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="text-danger mt-2">@errorMessage</div>
+        }
+        <img src="images/ico-search-gray.svg" width="20" height="20" alt="Buscar...">
+        <input id="inputBusqueda"
+               type="text"
+               class="input-search"
+               placeholder="¿Qué certificación necesitas?"
+               @bind="searchText"
+               @oninput="HandleChangeTextSearch"
+               @onkeypress="OnKeyPressBusqueda"
+               list="suggestions"
+               disabled="@isSearching" />
+        <datalist id="suggestions">
+            @foreach (var word in ListFnPredictWordsDto)
+            {
+                <option value="@word.Word"></option>
+            }
+        </datalist>
+    </div>
+    <button class="btn-general btn-rounded b-yellow c-black btn-search" @onclick="onClickFilter" disabled="@isSearching">
+        <img src="/images/ico-search.svg" width="18" height="18" alt="Accede a tu cuenta">Buscar
+    </button>
+    <button class="btn-general btn-rounded btn-filters-mobile" style="display: none">
+        <img src="images/ico-menu-dots.svg" width="30" height="30">
+    </button>
+    <button class="btn-general btn-rounded btn-info-empresas" style="display: none">
+        <img src="images/ico-empresas.svg" width="18" height="18">
+    </button>
+  
+</div>
+<div class="content-filtros m-top-2">
+    <label class="container-checkbox c-light-blue" for="busqueda-exacta">
+        <input type="checkbox" @bind="isExactSearch" id="busqueda-exacta">
+        <span class="checkmark"></span>
+        Búsqueda exacta
+    </label>
+    <label class="container-checkbox c-light-blue" for="filtros-avanzados">
+        <input type="checkbox"
+               id="filtros-avanzados"
+               checked="@filtrosAvanzadosVisibles"
+               @onchange="ToggleFiltrosAvanzados" />
+        <span class="checkmark"></span>
+        Ver filtros avanzados
+    </label>
+    <div class="content-filtro-visualizacion c-light-blue">
+        Visualización
+        <div class="filtros-visualizacion b-neutral-gray">
+            <button class="btn-visualizacion" @onclick="() => CambiarVisualizacion(true)">
+                <img src="/images/ico-filter-grid.svg" alt="Mostrar grilla">
+            </button>
+            <button class="btn-visualizacion" @onclick="() => CambiarVisualizacion(false)">
+                <img src="/images/ico-filter-map.svg" alt="Mostrar tarjetas">
+            </button>
+        </div>
+    </div>
+</div>
+
+<!--Mobile supuestamente responsivo pero es solo un modal con las opciones anteriores-->
+<div id="popupBusquedaResponsive" class="mfp-hide content-lightbox-general content-lightbox-empresas">
+    <h4>Filtros de búsqueda</h4>
+    <div class="content-filtros m-top-2">
+        <label class="container-checkbox c-light-blue" for="busqueda-exacta-mobile">
+            <input type="checkbox" checked="checked" id="busqueda-exacta-mobile">
+            <span class="checkmark"></span>
+            Búsqueda exacta
+        </label>
+    </div>
+    <div class="content-grid-filtros grid-filtros-responsive panel-input-filters-content">
+        <div class="form-check-label">
+            <div class="filter-content">
+                <button class="btn dropdown-toggle custom-bg " type="button" id="dropdownMenuButton-0"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    Seleccionar Por País:
+                </button><!--!-->
+            </div>
+        </div>
+        <div class="form-check-label">
+            <div class="filter-content">
+                <button class="btn dropdown-toggle custom-bg " type="button" id="dropdownMenuButton-1"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    Seleccionar ONA:
+                </button><!--!-->
+            </div>
+        </div>
+        <div class="form-check-label">
+            <div class="filter-content">
+                <button class="btn dropdown-toggle custom-bg " type="button" id="dropdownMenuButton-2"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    Seleccionar Esquemas:
+                </button><!--!-->
+            </div>
+        </div>
+        <div class="form-check-label">
+            <div class="filter-content">
+                <button class="btn dropdown-toggle custom-bg " type="button" id="dropdownMenuButton-3"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    Seleccionar Norma:
+                </button><!--!-->
+            </div>
+        </div>
+        <div class="form-check-label">
+            <div class="filter-content">
+                <button class="btn dropdown-toggle custom-bg " type="button" id="dropdownMenuButton-4"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    Seleccionar Estado:
+                </button><!--!-->
+            </div>
+        </div>
+        <div class="form-check-label">
+            <div class="filter-content">
+                <button class="btn dropdown-toggle custom-bg " type="button" id="dropdownMenuButton-5"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    Seleccionar Reconocimiento:
+                </button><!--!-->
+            </div>
+        </div>
+        <div class="div-quitar-buscar m-top-1">
+            <a href="#" class="quitar-filtro-responsive poppins-medium">Quitar filtros</a>
+            <button class="btn-general btn-rounded b-yellow c-black btn-search-responsive">
+                <img src="/images/ico-search.svg" width="18" height="18" alt="Accede a tu cuenta">Buscar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Lightbox oculto para información empresas CAN responsive-->
+<div id="popupInfoEmpresas" class="mfp-hide content-lightbox-general content-lightbox-empresas">
+    <h4>Organismos Evaluadores de la Conformidad acreditados de la CAN</h4>
+    <div class="data-empresas m-top-2">
+        <div class="info-empresa totales">
+            <p class="inter-medium">Total<br>Resultados</p>
+            <span class="c-black poppins-medium">1356</span>
+        </div>
+        <div class="info-empresa">
+            <img src="/images/logo-sae.png" width="52" height="auto" alt="SAE">
+            <p class="inter-regular">Ecuador</p>
+            <span class="c-black poppins-medium">1356</span>
+        </div>
+        <div class="info-empresa">
+            <img src="/images/logo-onac.png" width="65" height="auto" alt="ONAC">
+            <p class="inter-regular">Colombia</p>
+            <span class="c-black poppins-medium">270</span>
+        </div>
+        <div class="info-empresa">
+            <img src="/images/logo-inacal.png" width="75" height="auto" alt="INACAL">
+            <p class="inter-regular">Perú</p>
+            <span class="c-black poppins-medium">150</span>
+        </div>
+        <div class="info-empresa">
+            <img src="/images/logo-ibmetro.png" width="86" height="auto" alt="IBMETRO">
+            <p class="inter-regular">Bolivia</p>
+            <span class="c-black poppins-medium">100</span>
+        </div>
+    </div>
+</div>
+
+
+<script>
+     window.cerrarDropdowns = () => {
+        const active = document.activeElement;
+
+        // Evita cerrar dropdowns si el foco está en el input de búsqueda
+        if (active && active.id === "inputBusqueda") {
+            return;
+        }
+
+        // Cierra los dropdowns visibles
+        document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+            menu.classList.remove('show');
+        });
+
+        // Cierra los toggles visibles
+        document.querySelectorAll('.dropdown-toggle.show').forEach(button => {
+            button.classList.remove('show');
+            button.setAttribute("aria-expanded", "false");
+        });
+    };
+
+    $('.btn-info-empresas').on('click', function () {
+        $.magnificPopup.open({
+            items: {
+                src: '#popupInfoEmpresas'
+            },
+            type: 'inline',
+            midClick: true
+        });
+    });
+
+    $('.btn-filters-mobile').on('click', function () {
+        $.magnificPopup.open({
+            items: {
+                src: '#popupBusquedaResponsive'
+            },
+            type: 'inline',
+            midClick: true
+        });
+    });
+
+</script>

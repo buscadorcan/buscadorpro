@@ -1,0 +1,1 @@
+MR7C:\Users\Dell\source\repos\BuscadorCan\Core\Core.csproj¢net8.0òCSharp12

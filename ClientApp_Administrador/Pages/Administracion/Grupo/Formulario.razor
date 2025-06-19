@@ -1,0 +1,46 @@
+@attribute [Route($"{Routes.EDITAR_GRUPO}{{Id:int}}")]
+@layout AdminLayout
+@using Microsoft.AspNetCore.Authorization;
+@using Infractruture.Interfaces;
+@using Infractruture.Models;
+@using SharedApp.Dtos
+@attribute [Authorize]
+@inject NavigationManager NavigationManager
+
+<PageTitle>Formulario de Esquema</PageTitle>
+
+<EditForm Model="homologacion" OnValidSubmit="GuardarHomologacion" class="pt-4">
+	<DataAnnotationsValidator />
+
+	<!-- Título -->
+	<div class="ds-title-section">
+		<h2 class="ds-title-h2">Administración <span>Actualizar Registro de Entidad</span></h2>
+	</div>
+
+	<div class="ds-content-section full row">
+		<div class="col-md-12">
+			<label class="label valign-text-middle inter-regular-normal-comet-16px">Texto a Mostrar en la Web</label>
+			<InputText @bind-Value="homologacion.MostrarWeb" class="form-control inter-regular-normal-comet-14px" placeholder="ingresar..." style="margin-top: 2% !important;" />
+			<ValidationMessage For="(()=>homologacion.MostrarWeb)" />
+		</div>
+
+		<div class="col-md-12">
+			<label class="label valign-text-middle inter-regular-normal-comet-16px">Tooltip Web</label>
+			<InputText @bind-Value="homologacion.TooltipWeb" class="form-control inter-regular-normal-comet-14px" placeholder="ingresar..." style="margin-top: 2% !important;" />
+			<ValidationMessage For="(()=>homologacion.TooltipWeb)" />
+		</div>
+	</div>
+
+	<div class="ds-buttons-content">
+		<a @onclick="Regresar">
+			<div class="ds-btn-general ds-btn-red">
+				<img class="icons" src="admin/img/icons.svg" alt="Icons">
+				<div class="button-1 headingheadline4-h4">Regresar</div>
+			</div>
+		</a>
+		<div class="save-button-container">
+			<Button id="btnGuardar" @ref="saveButton" class="ds-btn-general ds-btn-blue" type="ButtonType.Submit"><div class="button-3 headingheadline4-h4">Guardar</div></Button>
+		</div>
+	</div>
+
+</EditForm>

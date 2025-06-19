@@ -1,0 +1,74 @@
+@attribute [Route(Routes.NUEVO_MENU_ROL)]
+@layout AdminLayout
+@using Microsoft.AspNetCore.Authorization
+@using Infractruture.Interfaces;
+@using SharedApp.Dtos
+@using System.Text;
+@using System.IO;
+
+<PageTitle>Formulario de Configuración de Menú</PageTitle>
+
+<EditForm Model="configuracionMenu" OnValidSubmit="RegistrarConfiguracionMenu" class="pt-4">
+
+	<DataAnnotationsValidator />
+
+	<div class="ds-title-section">
+		<!-- Título -->
+		<h2 class="ds-title-h2">Administración <span>Configuración para Menú</span></h2>
+	</div>
+
+	<div class="ds-content-section full row">
+		<!-- Campo Rol -->
+		<div class="col-md-12">
+			<label class="label valign-text-middle inter-regular-normal-comet-16px">Rol</label>
+				<select id="rolSelect" class="form-control inter-regular-normal-comet-14px small-input text-center"
+						@onchange="async (e) => await CargarMenus(e)">
+					<option value= Constantes.VACIO selected disabled>Seleccione un rol</option>
+					@if (roles != null)
+					{
+						@foreach (var rol in roles)
+						{
+							<option value="@rol.IdHomologacionRol">@rol.Rol</option>
+						}
+					}
+				</select>
+			<ValidationMessage For="(() => configuracionMenu.IdHRol)" />
+		</div>
+		<!-- Campo Menú -->
+		<div class="col-md-12">
+			<label class="label valign-text-middle inter-regular-normal-comet-16px">Menú</label>
+				<select class="form-control inter-regular-normal-comet-14px small-input text-center"
+						@bind="configuracionMenu.IdHMenu" @bind:event="onchange">
+					<option value= Constantes.VACIO selected disabled>Seleccione un menú</option>
+					@if (menus != null)
+					{
+						@foreach (var menu in menus)
+						{
+							<option value="@menu.IdHomologacion">@menu.MostrarWeb</option>
+						}
+					}
+				</select>
+			<ValidationMessage For="(() => configuracionMenu.IdHMenu)" />
+		</div>
+	</div>
+
+	<div class="ds-buttons-content">
+		<a @onclick="Regresar">
+			<div class="ds-btn-general ds-btn-red">
+				<img class="icons" src="admin/img/icons.svg" alt="Icons">
+				<div class="button-1 headingheadline4-h4">Regresar</div>
+			</div>
+		</a>
+		<div class="save-button-container">
+			<Button type="ButtonType.Submit" @ref="saveButton" class="ds-btn-general ds-btn-blue">
+				<div class="button-3 headingheadline4-h4">Guardar</div>
+			</Button>
+		</div>
+	</div>
+
+</EditForm>
+
+
+
+
+

@@ -1,0 +1,1 @@
+YRCC:\Users\Dell\source\repos\BuscadorCan\DataAccess\DataAccess.csproj¢net8.0òCSharp12

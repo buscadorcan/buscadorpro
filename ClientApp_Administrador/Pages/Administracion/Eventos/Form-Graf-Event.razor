@@ -1,0 +1,301 @@
+﻿@attribute [Route(Routes.REPORTE_EVENTOS)]
+@attribute [Route(Routes.REPORTE_FECHA_EVENTOS)]
+
+@using Infractruture.Interfaces;
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components;
+@using Microsoft.JSInterop;
+@using OfficeOpenXml;
+@using SharedApp.Dtos
+@using iTextSharp.text;
+@using iTextSharp.text.pdf;
+@layout AdminLayout
+@attribute [Authorize]
+@inject NavigationManager Navigation
+
+
+<div class="general title">
+	<h2 class="title headlineheadline2-h2">Reporte de Eventos del Sistema</h2>
+</div>
+
+@if (isLoading)
+{
+	<div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+		<div class="spinner-border text-primary" role="status">
+			<span class="visually-hidden">Cargando...</span>
+		</div>
+	</div>
+}
+else
+{
+	<div class="mt-2 mb-3 d-flex justify-content-between">
+
+		<Button id="btnDeleteAll" Type="ButtonType.Button" Color="ButtonColor.Danger" Outline="true" @onclick="GoBack">
+			<Icon Name="IconName.ArrowReturnLeft" />
+			<span class="ms-2 btnExp">Regresar</span>
+		</Button>
+
+		<!-- Grupo de botones de exportación -->
+		<div class="d-flex gap-2 mt-3">
+			<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownExport" data-bs-toggle="dropdown" aria-expanded="false">
+					<i class="bi bi-file-earmark-arrow-down"></i>
+					<span class="ms-2">Seccione el Reporte</span>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownExport">
+					<li>
+						<button class="dropdown-item" @onclick="() => verReport(reporteView.TiempoSession)">
+							<i class="bi bi-file-earmark-excel"></i>
+							<span class="ms-2">Tiempo de sessión</span>
+						</button>
+					</li>
+					<li>
+						<button class="dropdown-item" @onclick="() => verReport(reporteView.PaginasMasVisitadas)">
+							<i class="bi bi-file-earmark-pdf"></i>
+							<span class="ms-2">Paginas mas visitadas</span>
+						</button>
+					</li>
+					<li>
+						<button class="dropdown-item" @onclick="() => verReport(reporteView.FiltroMasUsado)">
+							<i class="bi bi-file-earmark-pdf"></i>
+							<span class="ms-2">Filtros mas usados</span>
+						</button>
+					</li>
+				</ul>
+			</div>
+			<!-- Botón Exportar a Excel -->
+			<div class="dropdown">
+				<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownExport" data-bs-toggle="dropdown" aria-expanded="false">
+					<i class="bi bi-file-earmark-arrow-down"></i> <!-- Ícono de Bootstrap -->
+					<span class="ms-2">Exportar Excel</span>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownExport">
+					<li>
+						<button class="dropdown-item" @onclick="() =>ExportarExcel(reporteView.TiempoSession)" disabled="@(!listasEventSession.Any())">
+							<i class="bi bi-file-earmark-excel"></i> <!-- Ícono de Excel -->
+							<span class="ms-2">Tiempo de session</span>
+						</button>
+					</li>
+					<li>
+						<button class="dropdown-item" @onclick="() =>ExportarExcel(reporteView.PaginasMasVisitadas)" disabled="@(!listasEventPagMasVist.Any())">
+							<i class="bi bi-file-earmark-pdf"></i> <!-- Ícono de PDF -->
+							<span class="ms-2">Paginas mas visitadas</span>
+						</button>
+					</li>
+					<li>
+						<button class="dropdown-item" @onclick="() =>ExportarExcel(reporteView.FiltroMasUsado)" disabled="@(!listasEventFiltrMasUsad.Any())">
+							<i class="bi bi-file-earmark-pdf"></i> <!-- Ícono de PDF -->
+							<span class="ms-2">Filtros mas usados</span>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	@if (selectView == reporteView.TiempoSession)
+	{
+		<div class="card-body px-lg-5 pt-4">
+
+			<div class="p-3 mb-2 bg-secondary-subtle text-secondary-emphasis">Reporte de Inicio de Sesión</div>
+
+			<div class="mt-2 mb-3 d-flex justify-content-end">
+				<Button id="btnDeleteAll" Type="ButtonType.Button" Color="ButtonColor.Primary" Outline="true" @onclick="() =>verGrafica(reporteView.TiempoSession)" disabled="@(!listasEventSession.Any())">
+					<Icon Name="IconName.BarChart" />
+					<span class="ms-2 btnExp">Ver en Grafica</span>
+				</Button>
+			</div>
+			<div class="ds-content-section full">
+				<div class="table-responsive">
+					<table class="general table">
+						<thead>
+							<tr>
+								@foreach (var column in new[]
+													{
+						("CodigoHomologacionRol", "Codigo Homologación"),
+						("Ip", "Dirección Ip")  ,
+						("FechaCreacion", "Fecha"),
+						("FechaInicio", "Fecha Inicio"),
+						("FechaFin", "Fecha Fin"),
+						("TiempoEnSegundos", "Tiempo De Conección En Min"),
+						})
+								{
+									<th @onclick="() => OrdenarPor(column.Item1)" style="cursor: pointer;">
+										@column.Item2 @(sortColumn == column.Item1 ? (sortAscending ? Constantes.FLECHA_ARRIBA : Constantes.FLECHA_ABAJO) : Constantes.VACIO)
+									</th>
+								}
+							</tr>
+						</thead>
+						<tbody>
+							@if (listasEventSession != null && listasEventSession.Any())
+							{
+								@foreach (var even in PaginatedItems)
+								{
+									<tr>
+										<td>@even.CodigoHomologacionRol</td>
+										<td>@even.IpDirec</td>
+										<td>@even.Fecha.ToString("dd/MM/yyyy")</td>
+										<td>@even.FechaInicio.ToString("dd/MM/yyyy HH:mm:ss")</td>
+										<td>@even.FechaFin.ToString("dd/MM/yyyy HH:mm:ss")</td>
+										<td>@even.TiempoDeConeccionEnMin</td>
+									</tr>
+								}
+							}
+							else
+							{
+								<tr>
+									<td colspan="6">No hay datos disponibles.</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="pagination-container">
+				<button class="btn btn-primary btn-sm" @onclick="PreviousPage" disabled="@(!CanGoPrevious)">
+					⏪
+				</button>
+
+				<span class="pagination-text inter-regular-normal-comet-14px">Página @CurrentPage de @TotalPages</span>
+
+				<button class="btn btn-primary btn-sm" @onclick="NextPage" disabled="@(!CanGoNext)">
+					⏩
+				</button>
+			</div>
+		</div>
+	}
+
+	@if (selectView == reporteView.PaginasMasVisitadas)
+	{
+		<div class="card-body px-lg-5 pt-4">
+
+			<div class="p-3 mb-2 bg-secondary-subtle text-secondary-emphasis">Reporte de Páginas más Visitadas</div>
+
+			<div class="mt-2 mb-3 d-flex justify-content-end">
+				<Button id="btnDeleteAll" Type="ButtonType.Button" Color="ButtonColor.Primary" Outline="true" @onclick="() =>verGrafica(reporteView.PaginasMasVisitadas)" disabled="@(!listasEventPagMasVist.Any())">
+					<Icon Name="IconName.BarChart" />
+					<span class="ms-2 btnExp">Ver en Grafica</span>
+				</Button>
+			</div>
+			<div class="ds-content-section full">
+				<div class="table-responsive">
+					<table class="general table">
+						<thead>
+							<tr>
+								@foreach (var column in new[]
+													{
+						("CodigoHomologacionRol", "Codigo Homologación"),
+						("NombreControl", "Nombre Control"),
+						("Ip", "Dirección Ip")  ,
+						("uso", "uso"),
+						})
+								{
+									<th @onclick="() => OrdenarPor(column.Item1)" style="cursor: pointer;">
+										@column.Item2 @(sortColumn == column.Item1 ? (sortAscending ? Constantes.FLECHA_ARRIBA : Constantes.FLECHA_ABAJO) : Constantes.VACIO)
+									</th>
+								}
+							</tr>
+						</thead>
+						<tbody>
+							@if (listasEventPagMasVist != null && listasEventPagMasVist.Any())
+							{
+								@foreach (var even in listasEventPagMasVist)
+								{
+									<tr>
+										<td>@even.CodigoHomologacionRol</td>
+										<td>@even.CodigoHomologacionMenu</td>
+										<td>@even.IpAddress</td>
+										<td>@even.uso</td>
+									</tr>
+								}
+							}
+							else
+							{
+								<tr>
+									<td colspan="4">No hay datos disponibles.</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	}
+
+	@if (selectView == reporteView.FiltroMasUsado)
+	{
+		<div class="card-body px-lg-5 pt-4">
+
+			<div class="p-3 mb-2 bg-secondary-subtle text-secondary-emphasis">Reporte de Filtro más Usados</div>
+
+			<div class="mt-2 mb-3 d-flex justify-content-end">
+				<Button id="btnDeleteAll" Type="ButtonType.Button" Color="ButtonColor.Primary" Outline="true" @onclick="() =>verGrafica(reporteView.FiltroMasUsado)" disabled="@(!listasEventFiltrMasUsad.Any())">
+					<Icon Name="IconName.BarChart" />
+					<span class="ms-2 btnExp">Ver en Grafica</span>
+				</Button>
+			</div>
+			<div class="ds-content-section full">
+				<div class="table-responsive">
+					<table class="general table">
+						<thead>
+							<tr>
+								@foreach (var column in new[]
+													{
+						("CodigoHomologacionRol", "Codigo Homologación"),
+						("Ip", "Dirección Ip"),
+						("FiltroTipo", "Tipo de Filtro"),
+						("FiltroValor", "Filtro"),
+						("uso", "Uso"),
+						})
+								{
+									<th @onclick="() => OrdenarPor(column.Item1)" style="cursor: pointer;">
+										@column.Item2 @(sortColumn == column.Item1 ? (sortAscending ? Constantes.FLECHA_ARRIBA : Constantes.FLECHA_ABAJO) : Constantes.VACIO)
+									</th>
+								}
+							</tr>
+						</thead>
+						<tbody>
+							@if (listasEventFiltrMasUsad != null && listasEventFiltrMasUsad.Any())
+							{
+								@foreach (var even in listasEventFiltrMasUsad)
+								{
+									<tr>
+										<td>@even.CodigoHomologacionRol</td>
+										<td>@even.IpAddress</td>
+										<td>@even.FiltroTipo</td>
+										<td>@even.FiltroValor</td>
+										<td>@even.Uso</td>
+									</tr>
+								}
+							}
+							else
+							{
+								<tr>
+									<td colspan="5">No hay datos disponibles.</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	}
+}
+
+<!-- Modal para la gráfica -->
+<div class="modal fade @(IsModalOpen ? "show d-block" : "d-none")" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Gráfica de Inicio de Sesión</h5>
+				<button type="button" class="btn-close" @onclick="CloseModal"></button>
+			</div>
+			<div class="modal-body">
+				<div id="map" style="height: 500px; width: 100%;"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+

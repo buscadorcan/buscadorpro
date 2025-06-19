@@ -1,0 +1,223 @@
+﻿@inherits LayoutComponentBase
+@using BlazorBootstrap
+@using Blazored.LocalStorage
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject Infractruture.Services.ToastService ToastService
+@inject ILocalStorageService LocalStorageService
+@inject NavigationManager NavigationManager
+@using Infractruture.Interfaces
+@using SharedApp.Helpers
+
+
+<link href="css/admin.css" rel="stylesheet">
+<link href="css/pagination.css" rel="stylesheet">
+<link href="css/modal-footer.css" rel="stylesheet">
+<link href="css/btn-export.css" rel="stylesheet">
+<link href="css/activo-inactivo.css" rel="stylesheet">
+<link href="css/general-table.css" rel="stylesheet">
+<link href="css/input-file.css" rel="stylesheet">
+<link rel="stylesheet" href="css/sinonimos.css">
+<link href="css/custom-dropdown.css" rel="stylesheet">
+
+<Toasts class="p-3"
+        Messages="ToastService.Messages"
+        AutoHide="true"
+        Delay="3000"
+        Placement="ToastsPlacement.TopRight"
+        CreateToastMessageCallback="CreateToastMessage" />
+
+<div class="dashboard-root">
+    <div class="dashboard-main">
+        <div class="dashboard-sidebar">
+            <div class="dashboard-sidebar-head">
+                <div class="dashboard-sidebar-brand">
+                    <a href="/administracion" class="logo-link ds-sidebar-logo">
+                        <img class="logo-img" src="images/admin/logo-comunidad-andina.svg" alt="logo" width="180" height="auto">
+                    </a>
+                </div>
+                <div class="ds-menu-trigger me-n2">
+                    <a role="button" class="ds-nav-toggle"><img src="images/admin/ico-menu-side.svg" width="22" height="18"></a>
+                    <a role="button" class="ds-nav-compact"><img src="images/admin/ico-menu-side.svg" width="22" height="18"></a>
+                    <a role="button" class="ds-nav-back"><img src="images/admin/ico-arrow-back.svg" width="24" height="24"></a>
+                </div>
+            </div>
+            <div class="ds-sidebar-content">
+                <div class="ds-simplebar-content">
+                    <ul class="ds-menu">
+                        <li class="ds-menu-heading">
+                            <h6 class="overline-title">Perfiles</h6>
+                        </li>
+                        <li class="ds-menu-item">
+                            @if (navItems?.Any() == true)
+                            {
+                                foreach (var item in navItems)
+                                {
+                                    if (item.CodigoHomologacion == "KEY_MENU_ONA" ||
+                                    item.CodigoHomologacion == "KEY_MENU_USU" ||
+                                    item.CodigoHomologacion == "KEY_MENU_REP_EST")
+                                    {
+                                        var isSelected = NavigationManager.Uri.Contains(item.NavItem.Href, StringComparison.OrdinalIgnoreCase);
+                                        var linkClass = isSelected ? "ds-menu-link selected" : "ds-menu-link";
+
+                                        <a href="@item.NavItem.Href" class="@linkClass">
+                                            <div class="ds-ico">
+                                                <img src="@item.Icono" width="18" height="18">
+                                            </div>
+                                            <span class="nk-menu-text">@item.NavItem.Text</span>
+                                        </a>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <p class="label valign-text-middle inter-regular-normal-comet-14px">Cargando menú...</p>
+                            }
+                        </li>
+
+                        <li class="ds-menu-heading">
+                            <h6 class="overline-title">Homologación</h6>
+                        </li>
+                        <li class="ds-menu-item">
+                            @if (navItems?.Any() == true)
+                            {
+                                foreach (var item in navItems)
+                                {
+                                    if (item.CodigoHomologacion != "KEY_MENU_ONA" &&
+                                    item.CodigoHomologacion != "KEY_MENU_USU" &&
+                                    item.CodigoHomologacion != "KEY_MENU_REP_EST")
+                                    {
+                                        var isSelected = NavigationManager.Uri.Contains(item.NavItem.Href, StringComparison.OrdinalIgnoreCase);
+                                        var linkClass = isSelected ? "ds-menu-link selected" : "ds-menu-link";
+
+                                        <a href="@item.NavItem.Href" class="@linkClass">
+                                            <div class="ds-ico">
+                                                <img src="@item.Icono" width="18" height="18">
+                                            </div>
+                                            <span class="nk-menu-text">@item.NavItem.Text</span>
+                                        </a>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <p class="label valign-text-middle inter-regular-normal-comet-14px">Cargando menú...</p>
+                            }
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="ds-wrap">
+            <div class="ds-simplebar-content">
+                <div class="ds-wrap-header">
+                    <div class="ds-responsive-logo-menu">
+                        <img src="images/admin/logo-comunidad-andina.svg" width="180" height="40">
+                        <a role="button" class="ds-nav-toogle-responsive"><img src="images/admin/ico-menu-side.svg" width="22" height="18"></a>
+                        <a role="button" class="ds-nav-compact-responsive"><img src="images/admin/ico-arrow-back.svg" width="24" height="24"></a>
+                    </div>
+                    <div class="ds-header-tools">
+                        <ul class="ds-quick-nav">
+                            <li class="ds-dropdown user-dropdown">
+                                <a role="button" class="ds-dropdown-toggle">
+                                    <div class="ds-user-toggle">
+                                        <div class="ds-user-avatar sm">
+                                            <img src="images/admin/ico-user-white.svg" width="14" height="14">
+                                        </div>
+                                        <div class="ds-user-info">
+                                            <div class="ds-user-status">@nombreRol</div>
+                                            <div class="ds-user-name dropdown-indicator">@nombre @apellidos</div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="ds-dropdown-menu">
+                                    <div class="ds-dropdown-inner user-card-wrap">
+                                        @{
+                                            var iniciales = $"{nombre?.Split(' ')[0][0]}{apellidos?.Split(' ')[0][0]}";
+                                        }
+                                        <div class="ds-user-card">
+                                            <div class="ds-user-avatar">
+                                                <span>@iniciales</span>
+                                            </div>
+                                            <div class="ds-user-info">
+                                                <span class="lead-text">@nombre @apellidos</span>
+                                                <span class="sub-text">@email</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ds-dropdown-inner">
+                                        <ul class="ds-link-list">
+                                            <li>
+                                                <a href="salir">
+                                                    <img src="images/admin/ico-logout.svg" width="23" height="23">
+                                                    <span>Cerrar sesión</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="ds-fmg-body">
+                    @if (NavigationManager.Uri.Contains("/administracion"))
+                    {
+                        <div class="ds-title-section">
+                            <h2 class="ds-title-h2">Acreditaciones <span>por Esquema</span></h2>
+                            <div class="ds-buttons-content">
+                                <a class="ds-btn-general ds-btn-blue" href="#">
+                                    <img src="images/admin/ico-excel-blue.svg"
+                                         width="19" height="19">Exportar
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ds-content-section full">
+                            <img src="images/admin/image-graphic.png" width="900" height="auto">
+                        </div>
+                        <div class="ds-content-section-grid">
+                            <div class="ds-content-section-half">
+                                <div class="ds-title-section">
+                                    <h2 class="ds-title-h2">Organizaciones <span>acreditadas por fecha</span></h2>
+                                    <div class="ds-buttons-content">
+                                        <a class="ds-btn-general ds-btn-blue" href="#">
+                                            <img src="images/admin/ico-excel-blue.svg"
+                                                 width="19"
+                                                 height="19">Exportar
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="ds-content-section full">
+                                    <img src="images/admin/image-graphic.png" width="900" height="auto">
+                                </div>
+                            </div>
+                            <div class="ds-content-section-half">
+                                <div class="ds-title-section">
+                                    <h2 class="ds-title-h2">Organizaciones <span>acreditadas por fecha</span></h2>
+                                    <div class="ds-buttons-content">
+                                        <a class="ds-btn-general ds-btn-blue" href="#">
+                                            <img src="images/admin/ico-excel-blue.svg"
+                                                 width="19"
+                                                 height="19">Exportar
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="ds-content-section full">
+                                    <img src="images/admin/image-graphic.png" width="900" height="auto">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        @Body
+                    } 
+                </div>
+                <div class="overlay-responsive-menu"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="ds-footer">
+    <small>©2024 Secretaría General de la Comunidad Andina | ® Derechos Reservados</small>
+</footer>

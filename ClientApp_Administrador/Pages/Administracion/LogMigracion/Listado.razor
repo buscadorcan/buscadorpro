@@ -1,0 +1,63 @@
+@attribute [Route(Routes.LOG_MIGRACION)]
+@layout AdminLayout
+@using SharedApp.Dtos
+
+<PageTitle>Logs de migraciones</PageTitle>
+
+<div class="ds-content-section">
+	@if (isLoading)
+	{
+		<div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+			<div class="spinner-border text-primary" role="status">
+				<span class="visually-hidden">Cargando...</span>
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="table-responsive">
+			<div class="general table">
+				<table class="table table-hover table-bordered table-striped w-100">
+					<thead>
+						<tr>
+							<th>Identificador</th>
+							<th>Secuencia</th>
+							<th>Estado</th>
+							<th>Tipo</th>
+							<th>Sistema de origen</th>
+							<th>Vista de origen</th>
+							<th>Fecha desde inicio</th>
+							<th>Fecha desde fin</th>
+							<th>Tiempo desde ejecución</th>
+							<th>Observación</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in logMigraciones)
+						{
+							<tr>
+								<td>@item.Migracion</td>
+								<td>@item.IdLogMigracion</td>
+								<td>@item.Estado</td>
+								<td>@item.OrigenFormato</td>
+								<td>@item.OrigenSistema</td>
+								<td>@item.OrigenVista</td>
+								<td>@item.Inicio</td>
+								<td>@item.Final</td>
+								<td>@item.Tiempo</td>
+								<td>@item.Observacion</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- Controles de paginación -->
+		<div class="pagination-container">
+			<button class="btn btn-primary btn-sm" @onclick="Anterior" disabled="@(!(currentPage > 1))">⏪</button>
+			<span class="pagination-text inter-regular-normal-comet-14px">Página @currentPage de @totalPages</span>
+			<button class="btn btn-primary btn-sm" @onclick="Siguiente" disabled="@(!(currentPage < totalPages))">⏩</button>
+		</div>
+	}
+</div>
+

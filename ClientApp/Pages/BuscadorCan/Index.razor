@@ -1,0 +1,62 @@
+@attribute [Route(Routes.MAIN)]
+@attribute [Route(Routes.PERSONA)]
+
+@using SharedApp.Dtos
+
+<Banner />
+
+<section class="filtros-data padding-initial">
+    <div class="content-buscador-filtros">
+        <InputSearch onClickSearch="@( (ValueTuple<string, bool> x) => onClickSearch(x.Item1, x.Item2) )"
+                     isGridVisible="@isGridVisible"
+                     isGridVisibleChanged="isGridVisibleChanged"
+                     onToggleFiltrosAvanzados="CambiarVisibilidadFiltrosAvanzados"
+                     isSearching="@isSearching" />
+
+
+    </div>
+    <SummaryCards PanelONA="PanelONA" HandlePanelONAChange="HandlePanelONAChange" />
+
+</section>
+
+@if (mostrarFiltrosAvanzados)
+{
+    <InputFilters onFilterChange="HandleFilterChange"
+                  isGridVisibleChanged="isGridVisibleChanged"
+                  isGridVisible="isGridVisible" />
+}
+
+@if (isGridVisible)
+{
+    <IndexGrilla iconUrls="iconUrls"
+                 ListDataDto="listBuscadorResultadoDataDto"
+                 listaEtiquetasGrilla="listaEtiquetasGrilla" />
+}
+else
+{
+    <IndexCard iconUrls="iconUrls"
+               ListDataDto="listBuscadorResultadoDataDto"
+               listaEtiquetasGrilla="listaEtiquetasCards"  />
+}
+
+
+<InputPaginations TotalItems="TotalItems"
+                  TotalPages="TotalPages"
+                  DisplayPages="DisplayPages"
+                  ActivePageNumber="ActivePageNumber"
+                  ActivePageNumberChanged="ActivePageNumberChanged"
+                  DisplayPagesChanged="DisplayPagesChanged" 
+                  IsSearching="isSearching"
+                  OnPageChanging="MostrarOverlayTemporal" />
+
+@if (isSearching)
+{
+    <div class="overlay-loading">
+        <div class="overlay-message">
+            <div class="spinner-border text-light mb-3" role="status"></div>
+            <p><strong>Buscando resultados...</strong></p>
+        </div>
+    </div>
+}
+
+

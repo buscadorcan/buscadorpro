@@ -1,0 +1,170 @@
+﻿.general.table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Asegura que las columnas de thead y tbody sean iguales */
+}
+
+    .general.table thead {
+        display: table-header-group; /* Asegura que el thead se expanda correctamente */
+        width: 100%; /* Hace que el encabezado ocupe el ancho completo */
+    }
+
+    .general.table th,
+    .general.table td {
+        width: 100% !important; /* Permite que cada columna tenga el mismo ancho */
+        min-width: 180px; /* Ajusta este valor si necesitas más espacio */
+        text-align: left; /* Alinea el contenido a la izquierda */
+        padding: 10px; /* Agrega espacio interno */
+        box-sizing: border-box; /* Evita que el padding afecte el tamaño total */
+    }
+
+    .general.table th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+        text-align: left;
+        color: #0244ce;
+    }
+
+    .general.table tbody {
+        width: 100%;
+        display: table-row-group; /* Asegura que el tbody ocupe el ancho total */
+    }
+
+    .general.table .table-primary {
+        background-color: #cce5ff !important; /* Resalta las filas con esta clase */
+    }
+
+.table-responsive {
+    width: -webkit-fill-available !important;
+}
+
+td, th {
+    white-space: nowrap; /* Evita saltos de línea */
+    overflow: hidden; /* Oculta el contenido desbordado */
+    text-overflow: ellipsis; /* Muestra "..." si el contenido es muy largo */
+    max-width: 200px; /* Ajusta este valor según tu diseño */
+}
+
+.custom-dropdown {
+    width: 100%;
+}
+
+.styled-dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.dropdown-btn {
+    width: 100%;
+    background-color: white;
+    color: #4a4a4a;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 6px 12px; /* 🔹 Se redujo el padding para hacer el combo más compacto */
+    font-size: 14px; /* 🔹 Se redujo la fuente ligeramente */
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+    .dropdown-btn::after {
+        display: inline-block;
+        margin-left: auto;
+    }
+
+.dropdown-menu-styled {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+    padding: 5px 0;
+}
+
+.dropdown-item-styled {
+    padding: 8px 12px; /* 🔹 Se redujo el padding de los items para menor altura */
+    font-size: 14px; /* 🔹 Fuente más pequeña para más compactación */
+    color: #4a4a4a;
+    cursor: pointer;
+}
+
+    .dropdown-item-styled:hover {
+        background-color: #f5f5f5;
+    }
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+}
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 20px;
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 4px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+    input:checked + .slider:before {
+        transform: translateX(14px);
+    }
+
+
+.modal-title {
+    align-self: stretch !important;
+    color: var(--neutraldark80);
+    font-weight: 600 !important;
+    line-height: 30px !important;
+    position: relative !important;
+    text-align: center !important;
+    font-size: medium !important;
+    font-family: var(--font-family-inter-semibold) !important;
+}
+
+.striped-table tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.striped-table tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+@media (max-width: 600px) {
+    .general.table {
+        display: block;
+        max-width: -moz-fit-content;
+        max-width: fit-content;
+        margin: 0 auto;
+        overflow-x: auto;
+    }
+}

@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<ItemGroup>
+		<Compile Remove="Icono\**" />
+		<Compile Remove="Mappers\**" />
+		<Compile Remove="Repositories\**" />
+		<Compile Remove="Service\**" />
+		<Content Remove="Icono\**" />
+		<Content Remove="Mappers\**" />
+		<Content Remove="Repositories\**" />
+		<Content Remove="Service\**" />
+		<EmbeddedResource Remove="Icono\**" />
+		<EmbeddedResource Remove="Mappers\**" />
+		<EmbeddedResource Remove="Repositories\**" />
+		<EmbeddedResource Remove="Service\**" />
+		<None Remove="Icono\**" />
+		<None Remove="Mappers\**" />
+		<None Remove="Repositories\**" />
+		<None Remove="Service\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.4" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
+		<PackageReference Include="Scrutor" Version="6.0.1" />
+		<PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+		<PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
+		<PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Logs\" />
+		<Folder Include="wwwroot\Icono\" />
+		<Folder Include="wwwroot\descargas\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include="wwwroot\Files\tokens\Google.Apis.Auth.OAuth2.Responses.TokenResponse-buscadorcan%40gmail.com" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\Core\Core.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ProjectExtensions>
+		<VisualStudio>
+			<UserProperties />
+		</VisualStudio>
+	</ProjectExtensions>
+
+	<PropertyGroup>
+		<EnableMSDeployAppOffline>true</EnableMSDeployAppOffline>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<UserSecretsId>3d09f0c9-1711-4b24-834f-d762cf639696</UserSecretsId>
+		<DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+	</PropertyGroup>
+
+	<!--<Target Name="PostPublish" AfterTargets="Publish">-->
+	<Target Name="PostBuild" AfterTargets="Build" Condition="'$(DOTNET_RUNNING_IN_CONTAINER)' != 'true'">
+		<!--<Exec Command="powershell -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -Command &quot;Start-Process -FilePath 'powershell.exe' -ArgumentList '-ExecutionPolicy Bypass -File C:\Buscador\WebApp\SetPermissions.ps1' -Verb RunAs&quot;" />-->
+	</Target>
+</Project>

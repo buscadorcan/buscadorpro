@@ -1,0 +1,103 @@
+@attribute [Route(Routes.MIGRACION_EXCEL)]
+@layout AdminLayout
+@using SharedApp.Dtos
+@inject IJSRuntime JSRuntime
+@using OfficeOpenXml
+@using System.IO
+@using System.Text
+@using iTextSharp.text
+@using iTextSharp.text.pdf
+
+<PageTitle>Migraciones desde Excel</PageTitle>
+
+<div class="ds-title-section">
+
+	<h2 class="ds-title-h2">Administración <span>Migración Excel</span></h2>
+
+	<div class="ds-buttons-content">
+		<!-- Botón Exportar a Excel -->
+		<a href="javascript:void(0)" class="ds-btn-general ds-btn-blue" @onclick="ExportarExcel">
+			<img src="images/admin/ico-excel-blue.svg"
+				 width="19" height="19"> Excel
+		</a>
+
+		<!-- Botón Exportar a PDF -->
+		<a href="javascript:void(0)" class="ds-btn-general ds-btn-red" @onclick="ExportarPDF">
+			<img src="images/admin/ico-file-pdf-ref.svg"
+				 width="19" height="19">PDF
+		</a>
+
+		<a href="/nueva-migarcion-excel" class="ds-btn-general ds-btn-yellow">
+			<img src="admin/img/add-24px.svg"
+				 width="19" height="19">Importar Excel
+		</a>
+	</div>
+</div>
+
+<div class="table-responsive">
+
+	@if (isLoading)
+	{
+		<div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+			<div class="spinner-border text-primary" role="status">
+				<span class="visually-hidden">Cargando...</span>
+			</div>
+		</div>
+	}
+	else
+	{
+
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					@foreach (var column in new[]
+										{
+				(nameof(LogMigracionDto.IdLogMigracion), "Migración"),
+				(nameof(LogMigracionDto.EsquemaVista), "Esquema Vista"),
+				(nameof(LogMigracionDto.Estado), "Estado"),
+				(nameof(LogMigracionDto.Inicio), "Inicio Migración"),
+				(nameof(LogMigracionDto.Final), "Final Migración"),
+				(nameof(LogMigracionDto.ExcelFileName), "Nombre archivo"),
+				(nameof(LogMigracionDto.Observacion), "Error")
+				})
+					{
+						<th @onclick="() => OrdenarPor(column.Item1)" style="cursor: pointer;">
+							@column.Item2 @(sortColumn == column.Item1 ? (sortAscending ? Constantes.FLECHA_ARRIBA : Constantes.FLECHA_ABAJO) : Constantes.VACIO)
+						</th>
+					}
+				</tr>
+			</thead>
+			<tbody>
+				@if (listasHevd != null && listasHevd.Any())
+				{
+					@foreach (var item in listasHevd)
+					{
+						<tr>
+							<td>@item.IdLogMigracion</td>
+							<td>@item.EsquemaVista</td>
+							<td>@item.Estado</td>
+							<td>@item.Inicio</td>
+							<td>@item.Final</td>
+							<td style="max-width: 225px; word-break: break-all;">@item.ExcelFileName</td>
+							<td>@item.Observacion</td>
+						</tr>
+					}
+				}
+				else
+				{
+					<tr>
+						<td colspan="7">No hay datos disponibles.</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+
+		<!-- Controles de paginación -->
+		<div class="pagination-container">
+			<button class="btn btn-primary btn-sm" @onclick="Anterior" disabled="@(!(currentPage > 1))">⏪</button>
+			<span class="pagination-text inter-regular-normal-comet-14px">Página @currentPage de @totalPages</span>
+			<button class="btn btn-primary btn-sm" @onclick="Siguiente" disabled="@(!(currentPage < totalPages))">⏩</button>
+		</div>
+	}
+</div>
+

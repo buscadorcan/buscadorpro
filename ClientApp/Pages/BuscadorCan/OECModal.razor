@@ -1,0 +1,54 @@
+﻿<div class="card shadow-lg position-relative">
+    <!-- Ícono de cierre en la esquina superior derecha -->
+    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+
+    <div class="card-body">
+        <!-- Contenedor con Scroll Vertical -->
+        <div class="table-responsive" style="max-height: 400px; overflow-y: auto; font-size: 10px !important;">
+            <table class="table table-bordered table-striped table-hover w-100">
+                <thead class="table-primary">
+                    <tr>
+                        <th class="text-center p-3">Información</th>
+                        <th class="text-center p-3">Descripción general del OEC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="fw-bold p-3">SIGLAS</td><td class="p-3">@onaSeleccionado?.ONASiglas</td></tr>
+                    <tr><td class="fw-bold p-3">Nombre del OEC</td><td class="p-3">@onaSeleccionado?.OrgNombreComercial</td></tr>
+                    <tr><td class="fw-bold p-3">Razón Social</td><td class="p-3">@onaSeleccionado?.OrgRazonSocial</td></tr>
+                    <tr><td class="fw-bold p-3">País</td><td class="p-3">@onaSeleccionado?.ONAPais</td></tr>
+                    <tr><td class="fw-bold p-3">Dirección</td><td class="p-3">@onaSeleccionado?.OrgDireccion</td></tr>
+                    <tr><td class="fw-bold p-3">Teléfono</td><td class="p-3">@onaSeleccionado?.OrgTelefono</td></tr>
+                    <tr><td class="fw-bold p-3">Página Web</td><td class="p-3"><a href="@onaSeleccionado?.OrgWeb" target="_blank">@onaSeleccionado?.OrgWeb</a></td></tr>
+                    <tr><td class="fw-bold p-3">Correo electrónico</td><td class="p-3"><a href="mailto:@onaSeleccionado?.OrgCorreo">@onaSeleccionado?.OrgCorreo</a></td></tr>
+                    <tr><td class="fw-bold p-3">Esquema Acreditado</td><td class="p-3">@onaSeleccionado?.OrgEsquemaAcreditado</td></tr>
+                    <tr><td class="fw-bold p-3">Norma de Acreditación</td><td class="p-3">@onaSeleccionado?.OrgNormaAcreditada</td></tr>
+                    <tr><td class="fw-bold p-3">Acuerdo de reconocimiento</td><td class="p-3">@onaSeleccionado?.OrgReconocimiento</td></tr>
+                    <tr><td class="fw-bold p-3">Fecha efectiva de la acreditación</td><td class="p-3">@onaSeleccionado?.OrgFechaEfectivaAcreditacion</td></tr>
+                    <tr><td class="fw-bold p-3">Periodo de vigencia</td><td class="p-3">@onaSeleccionado?.OrgPeriodoVigencia</td></tr>
+                    <tr>
+                        <td class="fw-bold p-3">Fecha de actualización</td>
+                        <td class="p-3">
+                            @{
+                                DateTime fecha;
+                                var fechaFormateada = DateTime.TryParse(onaSeleccionado?.OrgFechaActualizacion, out fecha)
+                                ? fecha.ToString("yyyy-MM-dd")
+                                : "--";
+                            }
+                            @fechaFormateada
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@if (loading)
+{
+    <p class="text-center text-muted mt-3 label valign-text-middle inter-regular-normal-comet-14px">Cargando información...</p>
+}
+else if (onaSeleccionado == null)
+{
+    <p class="text-center text-danger mt-3 label valign-text-middle inter-regular-normal-comet-14px">No se encontró información del ONA.</p>
+}

@@ -1,0 +1,37 @@
+services:
+  webapp:
+    container_name: "webapp"
+    image: ${DOCKER_REGISTRY-}webapp
+    build:
+      context: .
+      dockerfile: WebApp\Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ApiSettings__Secreta=${API_SECRET}
+      - EmailSettings__SmtpServer=${SMTP_SERVER}
+      - EmailSettings__Port=${SMTP_PORT}
+      - EmailSettings__Username=${SMTP_USER}
+      - EmailSettings__Password=${SMTP_PASS}
+      - EmailSettings__EnableSsl=${SMTP_ENABLE_SSL}
+      - EmailSettings__From=${SMTP_FROM}
+      - ConnectionStrings__LogPath=${LOG_PATH}
+      - ConnectionStrings__Default=${DB_CONNECTION_STRING}
+      - ConnectionStrings__sqlite=${DB_SQLITE}
+      - ConnectionStrings__Mysql=${DB_MYSQL}
+      - ConnectionStrings__Mssql=${DB_MSSQL}
+      - ConnectionStrings__OtraCon=${DB_OTHER}
+      - ConnectionStrings__MssqlCanDb=${DB_CAN_DB}
+      - ConnectionStrings__MssqlCanDbx=${DB_CAN_DBX}
+      - ConnectionStrings__MssqlCanDbp=${DB_CAN_DBP}
+      - Thesaurus__RutaGuardado=${THESAURUS_SAVE_PATH}
+      - Thesaurus__RutaArchivoBat=${THESAURUS_BAT_PATH}
+      - Serilog__MinimumLevel__Default=${LOG_LEVEL_DEFAULT}
+      - Serilog__MinimumLevel__Override__Microsoft=${LOG_LEVEL_MICROSOFT}
+      - Serilog__MinimumLevel__Override__System=${LOG_LEVEL_SYSTEM}
+      - Serilog__WriteTo__0__Name=${SERILOG_SINK_NAME_0}
+      - Serilog__WriteTo__0__Args__outputTemplate=${SERILOG_SINK_0_TEMPLATE}
+      - Serilog__WriteTo__1__Name=${SERILOG_SINK_NAME_1}
+      - Serilog__WriteTo__1__Args__path=${SERILOG_SINK_1_PATH}
+      - Serilog__WriteTo__1__Args__rollingInterval=${SERILOG_SINK_1_ROLLING}
+      - GoogleOAuth__Scopes__send=${GOOGLE_OAUTH_SEND}
+      - GoogleOAuth__Scopes__compose=${GOOGLE_OAUTH_COMPOSE}

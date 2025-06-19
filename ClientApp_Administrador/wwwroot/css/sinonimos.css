@@ -1,0 +1,170 @@
+﻿.btn {
+    margin-bottom: 0.5em;
+}
+
+.margin_title {
+    margin: 1em;
+}
+
+.mnjError {
+    margin: 1em;
+    color: red;
+    font-size: 9px;
+}
+
+.mnjRegistroExitoso {
+    margin: 1em;
+    color: #198754;
+    font-size: 14px;
+}
+
+.mnjRegistroError {
+    margin: 1em;
+    color: red;
+    font-size: 14px;
+}
+
+.li-flex {
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.div_flex {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.div_flex_secction {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.div_flex_buttom {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.ancho_85 {
+    width: 85%;
+}
+
+.ancho_70 {
+    width: 70%;
+}
+
+.ancho_40 {
+    width: 40%;
+}
+
+.ancho_20 {
+    width: 20%;
+}
+
+.ancho_15 {
+    width: 15%;
+}
+
+.ancho_10 {
+    width: 10%;
+}
+
+.ancho_4 {
+    width: 4%;
+}
+
+.ancho_100 {
+    width: 100%;
+}
+
+
+.input_control {
+    padding: 0.5em;
+    height: 2.7em;
+    border: 1px solid #212529;
+    border-top-left-radius: 10px;
+}
+
+.btn_control {
+    background-color: grey;
+    color: white;
+    border: 1px solid #212529;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    margin-bottom: 0px !important;
+    font-family: "Inter", sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    height: 43px;
+}
+
+
+.margin_botton {
+    margin-bottom: 0.5em;
+}
+
+.btn_control_guardar {
+    height: 2.5em;
+    background-color: #198754;
+    border: 1px solid #212529;
+    color: white;
+    margin-bottom: 0px !important;
+}
+
+.btn_control_bat {
+    height: 2.5em;
+    background-color: #0d6efd;
+    border: 1px solid #212529;
+    color: white;
+    margin-bottom: 0px !important;
+}
+
+.paddign_10 {
+    padding: 10px !important;
+}
+
+.margin_b_10 {
+    margin-bottom: 10px !important;
+}
+
+.margin_t_10 {
+    margin-top: 10px !important;
+}
+
+.accordion-button {
+    width: 95% !important;
+}
+
+.btn_control_guardar:hover {
+    text-decoration: none;
+    background-color: #198754 !important;
+}
+
+
+.btn_control_bat:hover {
+    text-decoration: none;
+    background-color: #0d6efd !important;
+}
+
+
+.btn_control:hover {
+    background-color: grey !important;
+    color: white;
+    text-decoration: none;
+}

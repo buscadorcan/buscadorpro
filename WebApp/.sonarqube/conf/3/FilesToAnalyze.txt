@@ -1,0 +1,56 @@
+﻿C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\BaseController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\BuscadorController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\CatalogosController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\DynamicController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\EmailController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\EsquemaController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\EventTrackingController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\GoogleAuthController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\HomologacionController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\LogMigracionController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\MenuController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\MigracionExcelController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\ONAConexionController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\OnaMigrateController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\ONAsController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\ReporteController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\ThesaurusController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\UsuarioEndpointController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\UsuariosController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Controllers\UtilitiesController.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Extensions.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Program.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Routes.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\obj\Debug\net8.0\WebApp.GlobalUsings.g.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\obj\Debug\net8.0\WebApp.AssemblyInfo.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\obj\Debug\net8.0\WebApp.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\09 OEC DTA IBMETRO 4Esquemas (1).xlsx
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\09 OEC DTA IBMETRO 4Esquemas (2).xlsx
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\09 OEC DTA IBMETRO 4Esquemas.xlsx
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\1.svg
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\20250131 09 OEC Excel Armonizado 20252901 v1 (1).xlsx
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\20250131 09 OEC Excel Armonizado 20252901 v1 (SGCAN) (004) (1).xlsx
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\confirmation_access_key_template.html
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\create_update_columns_esquema_access_key_template.html
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\create_update_esquema_access_key_template.html
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\migra_user_access_key_template.html
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\save_user_access_key_template.html
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\temporary_key_template.html
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\tokens\Google.Apis.Auth.OAuth2.Responses.TokenResponse-buscadorcan@gmail.com
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\tsesn.xml
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Files\verification_code_template.html
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Icono\1.png
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Icono\2.png
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Icono\3.png
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\wwwroot\Icono\4.png
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\appsettings.Development.json
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\appsettings.json
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Dockerfile
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Files\09 OEC DTA IBMETRO 4Esquema.xlsx
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Logs\log-20250508.txt
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Logs\log-20250514.txt
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Logs\log-20250515.txt
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\SetPermissions.ps1
+C:\Users\Dell\source\repos\BuscadorCan\WebApp\Properties\launchSettings.json
+C:\Users\Dell\source\repos\BuscadorCan\.dockerignore

@@ -1,0 +1,201 @@
+﻿
+<div class="mapa-resultados-tarjetas">
+    <Modal @ref="modal" Size="ModalSize.ExtraLarge" UseStaticBackdrop="true" />
+  @*   @if (_mapaCargando)
+    { 
+        <div class="mapa-resultado">
+            <GoogleMap @ref="@mapa"
+                       ApiKey="@ApiKey"
+                       Center="mapCenter"
+                       Height="800"
+                       Width="100"
+                       Zoom="4"
+                       style="border:0;"
+                       allowfullscreen=""
+                       Markers="markers" />
+        </div>
+
+    }
+    else if (markers.Any())
+    {
+        <div class="mapa-resultado">
+            <GoogleMap @ref="@mapa"
+                       ApiKey="@ApiKey"
+                       Center="mapCenter"
+                       Height="800"
+                       Width="100"
+                       Zoom="4"
+                       style="border:0;"
+                       allowfullscreen=""
+                       Markers="markers" />
+        </div>
+
+    }
+    else
+    {
+        <div class="alert alert-warning text-center mt-3">
+            No hay resultados geográficos para mostrar en el mapa.
+        </div>
+    } *@
+    <div class="mapa-resultado">
+        <GoogleMap @ref="@mapa"
+                   ApiKey="@ApiKey"
+                   Center="mapCenter"
+                   Height="800"
+                   Width="100"
+                   Zoom="4"
+                   style="border:0;"
+                   allowfullscreen=""
+                   Markers="markers" />
+    </div>
+
+
+    @if (listaEtiquetasGrilla != null)
+    {
+        <div class="tarjetas-grid">
+
+            @if (ListDataDto != null && ListDataDto.Any())
+            {
+                @foreach (var item in PagedListDataDto)
+                {
+                    <div class="content-tarjeta-resultado">
+                        <div class="info-tarjeta info-left">
+                            @{
+                                var pais = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 84)?.Data;
+                            }
+                            <small class="pais"> @(string.IsNullOrWhiteSpace(pais) ? "" : pais) </small>
+
+                            <div class="empresa">
+                                <div>
+                                    @{
+                                        // var backgroundUrl = iconUrls.ContainsKey(item.IdONA.GetValueOrDefault())
+                                        // ? iconUrls[item.IdONA.GetValueOrDefault()]
+                                        // : "https://via.placeholder.com/40";
+
+                                        // Si, en cambio, iconUrls todavía almacena la ruta relativa (p. ej. "/images/icono123.png"),
+                                        // habría que concatenar la base aquí mismo. Por ejemplo:
+                                        
+                                        string backgroundUrl;
+                                        if (iconUrls.ContainsKey(item.IdONA.GetValueOrDefault()))
+                                        {
+                                            var rutaRelativa = iconUrls[item.IdONA.GetValueOrDefault()].TrimStart('/');
+                                            backgroundUrl = $"{rutaRelativa}";
+                                        }
+                                        else
+                                        {
+                                            backgroundUrl = "https://via.placeholder.com/40";
+                                        }
+
+
+                                        var style = $@"
+                                                    width: 45px;
+                                                    height: 45px;
+                                                    background: url('{backgroundUrl}') #f0f1f5 no-repeat center;
+                                                    background-size: contain;
+                                                    border-radius: 50%;
+                                                    border: none;
+                                                    ";
+                                    }
+
+                                    <Button @onclick="() => showModalOna(item)" class="icono2" style="@style">
+                                    </Button>
+                                </div>
+
+                                @{
+                                    var ong = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 78)?.Data;
+                                }
+                                <p class="poppins-medium"> @(string.IsNullOrWhiteSpace(ong) ? "" : ong)</p>
+
+
+                            </div>
+
+                            <div class="razon-social m-top-1 p-bottom-1 border-bottom">
+                                @{
+                                    var razon = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 82)?.Data;
+                                }
+                                <p class="poppins-medium">Razon Social</p>
+                                <p class="poppins-medium-italic c-gray">
+                                    @(string.IsNullOrWhiteSpace(razon) ? "" : razon)
+                                </p>
+
+                            </div>
+
+                            <div class="identificacion-unica m-top-1 p-bottom-1 border-bottom">
+                                @{
+                                    var iden = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 83)?.Data;
+                                }
+                                <p class="poppins-medium">Identificacion unica</p>
+                                <p class="poppins-medium-italic c-gray">
+                                    @(string.IsNullOrWhiteSpace(iden) ? "" : iden)
+                                </p>
+
+
+                            </div>
+                            @{
+                                var acre = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 90)?.Data;
+                            }
+                            <div class="estado-empresa">
+                                @(string.IsNullOrWhiteSpace(acre) ? "Sin Acreditar" : acre)
+                            </div>
+
+
+                            <button class="abrir-pdf-empresa m-top-half-1" @onclick="() => AbrirPdf(item)">
+                                <img src="/images/ico-pdf.svg" width="40" height="40">
+                            </button>
+                        </div>
+
+                        <div class="info-tarjeta info-right">
+                            @{
+                                var recon = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 81)?.Data;
+                            }
+                            <small class="poppins-light reconocimiento">Reconocimiento Nacional</small>
+                            <h4 class="poppins-medium m-top-1">
+                                @(string.IsNullOrWhiteSpace(recon) ? "" : recon)
+                            </h4>
+
+
+
+                            <div class="identificacion-unica m-top-1 p-bottom-1">
+                                @{
+                                    var acredi = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 92)?.Data;
+                                }
+                                <p class="poppins-medium">Norma acreditada</p>
+                                <p class="poppins-light-italic c-gray">@(string.IsNullOrWhiteSpace(acredi) ? "" : acredi)</p>
+
+                            </div>
+                            <div class="esquema-certificacion p-bottom-1 flex-column">
+                                @{
+                                    var esquema = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 91)?.Data;
+                                    var prod = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 91)?.Data;
+                                }
+                                <p class="poppins-medium">Esq. de certificación</p>
+                               @*  <span class="organismo-certificacion" @onclick="() => showModalESQ(item)">@(string.IsNullOrWhiteSpace(esquema) ? "" : esquema)</span> *@
+                                <a href="#" @onclick="() => showModalESQ(item)" Color="ButtonColor.Link" class="organismo-certificacion">
+                                    @(string.IsNullOrWhiteSpace(esquema) ? "" : esquema)
+                                </a>
+                               <small class="inter-light c-black">
+                                    @(string.IsNullOrWhiteSpace(prod) ? "Muestra, Item o Producto" : prod)
+                                </small>
+                        
+                                <button class="abrir-detalle-empresa btn-general btn-border-blue m-top-1" @onclick="() => MostrarDetalle(item)">Ver más</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center" style="font-size: 12px !important;">
+                    <p class="label valign-text-middle inter-regular-normal-comet-14px">No se encontraron resultados.</p>
+                </div>
+            }
+
+
+
+        </div>
+    }
+
+</div>
+

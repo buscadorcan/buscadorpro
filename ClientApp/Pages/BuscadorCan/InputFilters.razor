@@ -1,0 +1,283 @@
+﻿@inject NavigationManager Navigation
+
+<div class="header-filtros-avanzados padding-0-30">
+    <p class="inter-regular" onclick="toggleFilters()">Filtros avanzados</p>
+    <div class="content-grid-filtros panel-input-filters-content">
+        @if (listadeOpciones != null)
+        {
+            @for (int i = 0; i < listadeOpciones.Count; i++)
+            {
+                var currentIndex = i;
+                <div class="form-check-label" style="margin-bottom: 0.5rem;">
+                    <label for="select-@currentIndex"
+                           class="visually-hidden"
+                           title="@listaEtiquetasFiltros?[currentIndex]?.TooltipWeb">
+                        @listaEtiquetasFiltros?[currentIndex]?.MostrarWeb
+                    </label>
+                    <div class="filter-content">
+                        <button class="btn dropdown-toggle custom-bg @(selectedValues.Any(f => f.CodigoHomologacion == listaEtiquetasFiltros?[currentIndex]?.CodigoHomologacion && f.Seleccion.Count > 0) ? "selected-filter" : "")"
+                                style="font-size: 12px;"
+                                type="button"
+                                id="dropdownMenuButton-@currentIndex"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                onclick="onDropdownToggleClick(this)">
+                            Seleccionar @listaEtiquetasFiltros?[currentIndex]?.MostrarWeb
+                        </button>
+                        <ul class="dropdown-menu p-2"
+                            style="font-size: 12px;"
+                            aria-labelledby="dropdownMenuButton-@currentIndex"
+                            data-bs-auto-close="false">
+
+                            <!-- 🔘 Checkbox de "Todos" -->
+                            <li>
+                                <div class="form-check d-flex align-items-center">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           id="check-@currentIndex-Todos"
+                                           checked="@(selectedValues.Any(f => f.CodigoHomologacion == listaEtiquetasFiltros?[currentIndex]?.CodigoHomologacion) &&
+                                              selectedValues.First(f => f.CodigoHomologacion == listaEtiquetasFiltros?[currentIndex]?.CodigoHomologacion).Seleccion.Count == (listadeOpciones[currentIndex]?.Count ?? 0))"
+                                           style="border: 2px solid #808080; width: 18px; height: 18px; margin-right: 8px;"
+                                           @onchange="(e) => CambiarSeleccionTodos(currentIndex, e.Value)">
+                                    <label class="form-check-label" for="check-@currentIndex-Todos" style="margin: 0;">
+                                        Todos
+                                    </label>
+                                </div>
+                            </li>
+
+                            <!-- ✅ Checkboxes individuales -->
+                            @foreach (var opcion in listadeOpciones[currentIndex] ?? [])
+                            {
+                                <li>
+                                    <div class="form-check d-flex align-items-center">
+                                        <input class="form-check-input checkbox-filtro"
+                                               type="checkbox"
+                                               id="check-@currentIndex-@opcion.MostrarWeb"
+                                               data-idhomologacion="@opcion.IdHomologacion"
+                                               data-codigohomologacion="@listaEtiquetasFiltros?[currentIndex]?.CodigoHomologacion"
+                                               checked="@selectedValues.Any(f => f.CodigoHomologacion == listaEtiquetasFiltros?[currentIndex]?.CodigoHomologacion && f.Seleccion.Contains(opcion.MostrarWeb))"
+                                               style="border: 2px solid #808080; width: 18px; height: 18px; margin-right: 8px;"
+                                               @onchange="(e) => CambiarSeleccion(opcion.MostrarWeb, currentIndex, e.Value)">
+                                        <label class="form-check-label" for="check-@currentIndex-@opcion.MostrarWeb" style="margin: 0;">
+                                            @opcion.MostrarWeb
+                                        </label>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+        }
+        <!-- 🔥 Botón “Limpiar” -->
+        <div class="panel-input-filters-content-button">
+            <button type="button"
+                    class="btn-limpiar"
+                    @onclick="LimpiarFiltros"
+                    id="btn-limpiar">
+                <span>Limpiar</span>
+                <i class="fas fa-broom"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 🔥 Agregar JavaScript al final para alternar visibilidad y manejar dropdowns -->
+<script>
+    // ─────────────────────────────────────────────────────────────────
+    // 1) Referencia a la instancia Blazor (para luego invokeMethodAsync)
+    // ─────────────────────────────────────────────────────────────────
+    window.instanciaInputFilters = window.instanciaInputFilters || null;
+    function registrarInstanciaInputFilters(ref) {
+        window.instanciaInputFilters = ref;
+        console.log("[JS] Blazor instance registered:", ref);
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // 2) toggleFilters(): muestra/oculta el panel de filtros avanzados
+    // ─────────────────────────────────────────────────────────────────
+    function toggleFilters() {
+        console.log("[JS] toggleFilters() invoked");
+        const panel = document.querySelector(".panel-input-filters-content");
+        const toggleText = document.querySelector(".inter-regular");
+
+        if (!panel || !toggleText) {
+            console.warn("[JS] toggleFilters: no se encontró panel o toggleText");
+            return;
+        }
+
+        if (panel.classList.contains("show")) {
+            panel.classList.remove("show");
+            toggleText.innerText = "Filtros avanzados";
+            console.log("[JS] panel ocultado, toggleText → 'Filtros avanzados'");
+        } else {
+            panel.classList.add("show");
+            toggleText.innerText = "Ocultar filtros avanzados";
+            console.log("[JS] panel mostrado, toggleText → 'Ocultar filtros avanzados'");
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // 3) invocarSeleccionados(): recopila checkboxes marcados y llama a Blazor
+    // ─────────────────────────────────────────────────────────────────
+    function invocarSeleccionados() {
+        console.log("[JS] invocarSeleccionados() invoked");
+        const seleccionados = [];
+        const checkboxes = document.querySelectorAll(".checkbox-filtro:checked");
+        console.log("[JS]    checkboxes marcados encontrados:", checkboxes.length);
+
+        checkboxes.forEach(chk => {
+            const label = document.querySelector(`label[for='${chk.id}']`);
+            const comboCodigo = chk.getAttribute("data-codigohomologacion");
+            const idHomologacion = parseInt(chk.getAttribute("data-idhomologacion"));
+            console.log(
+                "[JS]    procesando checkbox:",
+                chk.id,
+                "| label:", label?.innerText,
+                "| comboCodigo:", comboCodigo,
+                "| idHomologacion:", idHomologacion
+            );
+
+            if (label && comboCodigo) {
+                seleccionados.push({
+                    Combo: comboCodigo,
+                    Valor: label.innerText.trim(),
+                    IdHomologacion: idHomologacion
+                });
+            }
+        });
+
+        console.log("[JS]    Arreglo de seleccionados a enviar:", seleccionados);
+
+        if (window.instanciaInputFilters) {
+            console.log("[JS]    Invocando a Blazor: RecibirSeleccionados", seleccionados);
+            window.instanciaInputFilters.invokeMethodAsync('RecibirSeleccionados', seleccionados)
+                .then(() => console.log("[JS]    ✅ RecibirSeleccionados ejecutado"))
+                .catch(err => console.error("[JS]    ❌ Error al invocar:", err));
+        } else {
+            console.warn("[JS]    No hay instanciaInputFilters, no se envía a Blazor");
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // 4) Detectar “clic afuera” para cerrar dropdowns, excepto:
+    //     • Si el clic fue dentro de .content-buscador (no cerrar ni invocar)
+    //     • Si el clic fue dentro de un dropdown (toggle o menú)
+    // ─────────────────────────────────────────────────────────────────
+    let isClickInsideDropdown = false;
+
+    document.addEventListener("mousedown", function(event) {
+        // 4.a) Si el clic ocurre dentro de .content-buscador → marcamos "dentro"
+        const insideBuscador = event.target.closest(".content-buscador") !== null;
+        if (insideBuscador) {
+            isClickInsideDropdown = true;
+            console.log("[JS] mousedown → dentro de .content-buscador; no cerrar dropdown");
+            return;
+        }
+
+        // 4.b) Si el clic ocurre dentro de un .dropdown-menu o .dropdown-toggle → marcamos "dentro"
+        const insideMenu   = event.target.closest(".dropdown-menu");
+        const insideToggle = event.target.closest(".dropdown-toggle");
+        if (insideMenu || insideToggle) {
+            isClickInsideDropdown = true;
+            console.log(
+                "[JS] mousedown → isClickInsideDropdown = true | insideMenu:",
+                insideMenu,
+                "| insideToggle:", insideToggle
+            );
+        } else {
+            // 4.c) Cualquier otro lugar del documento → marcamos "fuera"
+            isClickInsideDropdown = false;
+            console.log("[JS] mousedown → isClickInsideDropdown = false (clic fuera de dropdown y fuera de content-buscador)");
+        }
+    });
+
+    document.addEventListener("mouseup", function() {
+        console.log("[JS] mouseup → isClickInsideDropdown =", isClickInsideDropdown);
+        // Si el clic no fue ni en un dropdown ni en .content-buscador, invocamos selección
+        if (!isClickInsideDropdown) {
+            console.log("[JS]    => mouseup fuera de dropdown y fuera de content-buscador, llamando a invocarSeleccionados()");
+            invocarSeleccionados();
+        } else {
+            console.log("[JS]    => mouseup dentro de dropdown o dentro de content-buscador, no invocarSeleccionados()");
+        }
+        isClickInsideDropdown = false;
+    });
+
+    // ─────────────────────────────────────────────────────────────────
+    // 5) onDropdownToggleClick(btn): se asocia al onclick de cada <button data-bs-toggle="dropdown">.
+    //    LLAMA SIEMPRE a invocarSeleccionados() EN CUANTO SE PULSA el botón.
+    // ─────────────────────────────────────────────────────────────────
+    function onDropdownToggleClick(btn) {
+        console.log("[JS] onDropdownToggleClick() → clic en botón:", btn.id);
+
+        // Llamamos inmediatamente a invocarSeleccionados(), sin comprobar show/hidden
+        invocarSeleccionados();
+
+        // Luego dejamos que Bootstrap abra o cierre el menú normalmente
+        // (no necesitamos ningún setTimeout aquí, porque no dependemos de show/hidden)
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // 6) ¡Ahora enlazamos el botón “Limpiar” para que desmarque TODO!
+    //    (Pero las funciones reales se invocan desde C# con JS.InvokeVoidAsync)
+    // ─────────────────────────────────────────────────────────────────
+    document.addEventListener("DOMContentLoaded", function() {
+        const btnLimpiar = document.getElementById("btn-limpiar");
+        if (btnLimpiar) {
+            btnLimpiar.addEventListener("click", function() {
+                console.log("[JS] Botón Limpiar pulsado → se desmarcan todas las casillas.");
+
+                // 6.a) Desmarcar todas las casillas individuales
+                document.querySelectorAll(".checkbox-filtro").forEach(chk => {
+                    chk.checked = false;
+                });
+
+                // 6.b) Desmarcar todas las casillas “Todos”
+                document.querySelectorAll(".todos-filtro").forEach(chkTodos => {
+                    chkTodos.checked = false;
+                });
+
+                // 6.c) Invocar Seleccionados (vacío) para que el backend reciba array vacío
+                invocarSeleccionados();
+            });
+        }
+    });
+
+    // ─────────────────────────────────────────────────────────────────
+    // 7) Funciones que LimpiarFiltros() invoca desde C#:
+    //    cerrarDropdowns, activarBotonLimpiarTemporalmente y desmarcarTodosLosCheckboxes
+    // ─────────────────────────────────────────────────────────────────
+    window.cerrarDropdowns = function() {
+        // Quitar "show" de cada menú abierto (<ul class="dropdown-menu show">)
+        document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+            menu.classList.remove('show');
+        });
+        // Quitar "show" y aria-expanded de cada toggle abierto (<button class="dropdown-toggle show">)
+        document.querySelectorAll('.dropdown-toggle.show').forEach(btn => {
+            btn.classList.remove('show');
+            btn.setAttribute('aria-expanded', 'false');
+        });
+    };
+
+    window.activarBotonLimpiarTemporalmente = function() {
+        const btn = document.getElementById("btn-limpiar");
+        if (!btn) return;
+        btn.classList.add("btn-limpiar-activo");
+        setTimeout(() => {
+            btn.classList.remove("btn-limpiar-activo");
+        }, 1000);
+    };
+
+    window.desmarcarTodosLosCheckboxes = function() {
+        // Desmarca todas las casillas individuales (clase .checkbox-filtro)
+        document.querySelectorAll(".checkbox-filtro").forEach(chk => {
+            chk.checked = false;
+        });
+        // Desmarca también las casillas “Todos” (clase .todos-filtro)
+        document.querySelectorAll(".todos-filtro").forEach(chkTodos => {
+            chkTodos.checked = false;
+        });
+    };
+</script>
+

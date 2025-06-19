@@ -1,0 +1,124 @@
+@attribute [Route(Routes.ESQUEMA)]
+@layout AdminLayout
+@using Microsoft.AspNetCore.Authorization;
+@using OfficeOpenXml
+@using SharedApp.Dtos
+@attribute [Authorize]
+@using System.IO
+@using System.Text
+@using iTextSharp.text
+@using iTextSharp.text.pdf
+
+<PageTitle>Homologación Esquemas</PageTitle>
+
+
+<div class="ds-title-section">
+
+	<h2 class="ds-title-h2">Administración <span>Homologación Esquemas</span></h2>
+	<Modal @ref="modal" Size="ModalSize.ExtraLarge" />
+
+	<div class="ds-buttons-content">
+		<!-- Botón Exportar a Excel -->
+		<a href="javascript:void(0)" class="ds-btn-general ds-btn-blue" @onclick="ExportarExcel">
+			<img src="images/admin/ico-excel-blue.svg"
+				 width="19" height="19"> Excel
+		</a>
+
+		<!-- Botón Exportar a PDF -->
+		<a href="javascript:void(0)" class="ds-btn-general ds-btn-red" @onclick="ExportarPDF">
+			<img src="images/admin/ico-file-pdf-ref.svg"
+				 width="19" height="19">PDF
+		</a>
+
+		<a href="@Routes.NUEVO_ESQUEMA" class="ds-btn-general ds-btn-yellow">
+			<div class="button-3 headingheadline4-h4">Nuevo Menú</div>
+		</a>
+	</div>
+</div>
+
+<div class="general table">
+	@if (isLoading)
+	{
+		<div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+			<div class="spinner-border text-primary" role="status">
+				<span class="visually-hidden">Cargando...</span>
+			</div>
+		</div>
+	}
+	else
+	{
+		<Grid @ref="grid"
+			  TItem="EsquemaDto"
+			  class="table table-hover table-striped"
+			  DataProvider="EsquemasDataProvider"
+			  Responsive="true"
+			  Id="sortableGrid"
+			  Style="width:100%; width: -webkit-fill-available !important;">
+
+			<GridColumn TItem="EsquemaDto" HeaderText="Texto a Mostrar en la Web" PropertyName="MostrarWeb" class="cell-text cell-1 bodybody-small"
+						ColumnClass="@(x => x.MostrarWebOrden == 1 ? Constantes.TABLA_PRIMARIA :  Constantes.VACIO)">
+				@(string.IsNullOrWhiteSpace(context.MostrarWeb) ? "-" : context.MostrarWeb)
+				<input type="hidden" value="@context.IdEsquema" />
+			</GridColumn>
+
+			<GridColumn TItem="EsquemaDto" HeaderText="Nombre Vista" PropertyName="NombreVista" class="cell-text cell-1 bodybody-small"
+						ColumnClass="@(x => x.MostrarWebOrden == 1 ? Constantes.TABLA_PRIMARIA :  Constantes.VACIO)">
+				@(string.IsNullOrWhiteSpace(context.EsquemaVista) ? "-" : context.EsquemaVista)
+			</GridColumn>
+
+			<GridColumn TItem="EsquemaDto" HeaderText="Columnas" class="cell-text cell-1 bodybody-small"
+						ColumnClass="@(x => x.MostrarWebOrden == 1 ? Constantes.TABLA_PRIMARIA :  Constantes.VACIO)">
+				<Button Color="ButtonColor.Secondary" Outline="true" Size="ButtonSize.Small" @onclick="() => showModal(context.IdEsquema)">
+					<Icon Name="IconName.Front" />
+				</Button>
+			</GridColumn>
+
+			<GridColumn TItem="EsquemaDto" HeaderText="Editar" class="cell-text cell-1 bodybody-small"
+						ColumnClass="@(x => x.MostrarWebOrden == 1 ? Constantes.TABLA_PRIMARIA :  Constantes.VACIO)">
+				<Button Type="ButtonType.Link" Color="ButtonColor.Secondary" Outline="true"
+						To="@($"/editar-esquema/{context.IdEsquema}")" Size="ButtonSize.Small">
+					<Icon Name="IconName.PencilSquare" />
+				</Button>
+			</GridColumn>
+
+			<GridColumn TItem="EsquemaDto" HeaderText="Eliminar" class="cell-text cell-1 bodybody-small"
+						ColumnClass="@(x => x.MostrarWebOrden == 1 ? Constantes.TABLA_PRIMARIA :  Constantes.VACIO)">
+				<Button id=Constantes.BTN_DELETE Color="ButtonColor.Danger" Outline="true" @onclick=@(() => OpenDeleteModal(context.IdEsquema)) Size="ButtonSize.Small">
+					<Icon Name="IconName.Trash3" />
+				</Button>
+			</GridColumn>
+
+		</Grid>
+	}
+</div>
+
+<div class="card-footer">
+	<div class="py-2">
+		<Alert Color="AlertColor.Primary" Dismissable="false">
+			<Icon Name="IconName.InfoCircleFill" class="me-2"></Icon>
+			<span class="label valign-text-middle inter-regular-normal-comet-16px">Esquema a mostrar por defecto en el buscador</span>
+		</Alert>
+	</div>
+</div>
+
+@if (deleteshowModal)
+{
+	<div class="modal show d-block" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title inter-regular-normal-comet-14px">Confirmar Eliminación</h5>
+					<button type="button" class="btn-close inter-regular-normal-comet-14px" aria-label="Close"
+							@onclick="CloseModal"></button>
+				</div>
+				<div class="modal-body">
+					<p class="label valign-text-middle inter-regular-normal-comet-14px">¿Está seguro que desea eliminar este registro?</p>
+				</div>
+				<div class="modal-footer">
+					<Button Color="ButtonColor.Danger" @onclick=@(() => ConfirmDelete())>Eliminar</Button>
+					<Button Color="ButtonColor.Secondary" @onclick=@(() => CloseModal())>Cancelar</Button>
+				</div>
+			</div>
+		</div>
+	</div>
+}

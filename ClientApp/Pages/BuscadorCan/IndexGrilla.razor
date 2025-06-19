@@ -1,0 +1,132 @@
+@using BlazorBootstrap
+@using Infractruture.Models;
+@using Newtonsoft.Json;
+@using SharedApp.Dtos
+
+<Modal @ref="modal" id="modalId" Size="ModalSize.ExtraLarge" UseStaticBackdrop="true" />
+
+@if (IsSearchingExport)
+{
+    <div class="overlay-loading">
+        <div class="overlay-message">
+            <div class="spinner-border text-light mb-3" role="status"></div>
+            <p><strong>Exportando resultados...</strong></p>
+        </div>
+    </div>
+}
+
+<div class="panel-index-grilla">
+    <div class="table-responsive" style="height:100%">
+        @if (listaEtiquetasGrilla != null)
+        {
+            <div style="margin-bottom: 10px;">
+                <Tooltip Title="Exportar Excel">
+                    <Button Color="ButtonColor.Success" Size="ButtonSize.Small" @onclick="ExportarExcel">
+                        <Icon Name="IconName.FileExcel" /> Excel
+                    </Button>
+                </Tooltip>
+                 <Tooltip Title="Exportar PDF">
+                    <Button Color="ButtonColor.Danger" Size="ButtonSize.Small" @onclick="ExportarPDF">
+                        <Icon Name="IconName.FilePdf" /> PDF
+                    </Button>
+                </Tooltip> 
+            </div>
+
+            <Grid TItem="BuscadorResultadoDataDto"
+                  class="table table-hover table-bordered table-striped grid-custom-style"
+                  Data="ListDataDto"
+                  Responsive="true"
+                  FixedHeader="true"
+                  Height="100"
+                  Unit="Unit.Percentage"
+                  EmptyText="No hay información disponible">
+                <GridColumn TItem="BuscadorResultadoDataDto" class="grid-header">
+                    <HeaderContent>
+                        Informacion<br />de Organismos<br />de Acreditación
+                    </HeaderContent>
+                    <ChildContent>
+                        <div>
+                            <Button Color="ButtonColor.Secondary" Outline="true" Size="ButtonSize.Small" @onclick="() => showModalOna(context)">
+                                <img src="@(iconUrls.ContainsKey(context.IdONA.GetValueOrDefault()) ? iconUrls[context.IdONA.GetValueOrDefault()] : "")"
+                                     alt="Icono" class="grid-row-img-ona" />
+                            </Button>
+                            @* <div class="grid-row-text">@context.Siglas</div> *@
+                        </div>
+                    </ChildContent>
+                </GridColumn>
+
+                @foreach (var etiqueta in listaEtiquetasGrilla.OrderBy(c => c.MostrarWebOrden))
+                {
+                    <GridColumn TItem="BuscadorResultadoDataDto" PropertyName="@etiqueta.MostrarWeb" SortString="@etiqueta.MostrarWeb">
+                        <HeaderContent>
+                            <Tooltip Title="@etiqueta.TooltipWeb">
+                                <span class="grid-header">@etiqueta.MostrarWeb</span>
+                            </Tooltip>
+                        </HeaderContent>
+                        <ChildContent>
+                            <div style="display: flex; align-items: start; justify-content: start;">
+                                @{
+                                    var dato = context?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == etiqueta.IdHomologacion)?.Data;
+                                }
+
+                                @if (etiqueta.IdHomologacion == 81)
+                                {
+                                    <NavLink @onclick="() => showModalOEC(context)" >
+                                        <span style="color: #007bff; text-decoration: underline;">@(string.IsNullOrWhiteSpace(dato.Trim()) ? "ModalPrueba" : dato)</span>
+                                    </NavLink>
+                                }
+                                else if (etiqueta.IdHomologacion == 91)
+                                {
+                                    <NavLink @onclick="() => showModalESQ(context)" >
+                                        <span style="color: #007bff; text-decoration: underline;">@(string.IsNullOrWhiteSpace(dato) ? "ModalPrueba" : dato)</span>
+                                    </NavLink>
+                                }
+                                else if (etiqueta.IdHomologacion == 96 || etiqueta.IdHomologacion == 94 || etiqueta.IdHomologacion == 95)
+                                {
+                                    @if (DateTime.TryParse(dato, out DateTime fechaConvertida))
+                                    {
+                                        <span class="grid-row-text">
+                                            @fechaConvertida.ToString("yyyy-MM-dd")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @("--")
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="grid-row-text">
+                                        @(string.IsNullOrWhiteSpace(dato) ? "--" : dato)
+                                    </span>
+                                }
+                            </div>
+                        </ChildContent>
+                    </GridColumn>
+                }
+                <GridColumn TItem="BuscadorResultadoDataDto" class="grid-header">
+                    <HeaderContent>
+                        Detalle<br />del<br />alcance
+                    </HeaderContent>
+                    <ChildContent>
+                        <Button Color="ButtonColor.Secondary" Outline="true" Size="ButtonSize.Small" @onclick="() => showModal(context)">
+                            <Icon Name="IconName.Search" Size="IconSize.x5" />
+                        </Button>
+                    </ChildContent>
+                </GridColumn>
+                <GridColumn TItem="BuscadorResultadoDataDto" class="grid-header">
+                    <HeaderContent>
+                        Alcance<br />acreditado<br />ONA
+                    </HeaderContent>
+                    <ChildContent>
+                        <Button Color="ButtonColor.Secondary" Outline="true" Size="ButtonSize.Small" @onclick="() => ShowPdfDialog(context)">
+                            <Icon Name="IconName.FileTypePdf" Size="IconSize.x5" />
+                        </Button>
+                    </ChildContent>
+                </GridColumn>
+            </Grid>
+        }
+    </div>
+</div>
+
+

@@ -1,0 +1,1 @@
+WRAC:\Users\Dell\source\repos\BuscadorCan\SharedApp\SharedApp.csproj¢net8.0òCSharp12
