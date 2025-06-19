@@ -1,4 +1,5 @@
-#EVN:  *nov2K24*
+#EVN:  *nov2K25*
+repositorio creado en funcion del  buscador CAN
 1. SDK .NET : https://dotnet.microsoft.com/en-us/download
 2. VSCode   : https:2//code.visualstudio.com/download
   - EXT:  
