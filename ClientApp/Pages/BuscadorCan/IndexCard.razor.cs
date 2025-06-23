@@ -202,24 +202,25 @@ namespace ClientApp.Pages.BuscadorCan
             await OnModalClosed();
         }
 
+        //TODO: En las tarjetas tambien llamar al modal de PETMODAL
         /// <summary>
         /// Método para mostrar el resultados en ventana modal
         /// </summary>
-        private async Task AbrirPdf(BuscadorResultadoDataDto item)
-        {
-            // Obtener la URL del certificado
-            var base64 = await GetPdfUrlFromEsquema(item);
+        //private async Task AbrirPdf(BuscadorResultadoDataDto item)
+        //{
+        //    // Obtener la URL del certificado
+        //    var base64 = await GetPdfUrlFromEsquema(item);
 
-            if (string.IsNullOrWhiteSpace(base64))
-            {
-                Console.WriteLine("Archivo no encontrado.");
-            }
+        //    if (string.IsNullOrWhiteSpace(base64))
+        //    {
+        //        Console.WriteLine("Archivo no encontrado.");
+        //    }
 
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("PdfUrl", base64);
-            await modal.ShowAsync<PdfModal>(title: "Información", parameters: parameters);
-            await OnModalClosed();
-        }
+        //    var parameters = new Dictionary<string, object>();
+        //    parameters.Add("PdfUrl", base64);
+        //    await modal.ShowAsync<PdfModal>(title: "Información", parameters: parameters);
+        //    await OnModalClosed();
+        //}
 
         /// <summary>
         /// Método para obtener la URL del certificado.

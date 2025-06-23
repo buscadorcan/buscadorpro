@@ -85,8 +85,7 @@ namespace DataAccess.Repositories
                         KEY_FIL_PAI = f.KEY_FIL_PAI,
                         KEY_FIL_EST = f.KEY_FIL_EST,
                         KEY_FIL_ESQ = f.KEY_FIL_ESQ,
-                        KEY_FIL_NOR = f.KEY_FIL_NOR,
-                        KEY_FIL_REC = f.KEY_FIL_REC
+                        KEY_FIL_NOR = f.KEY_FIL_NOR
                     })
                     .ToList();
             });
@@ -94,23 +93,32 @@ namespace DataAccess.Repositories
 
         public List<vw_FiltrosAnidados> ObtenerFiltrosAnidadosAll()
         {
-            return ExecuteDbOperation(context =>
+            try
             {
-                var query = context.VwFiltroAnidados.AsQueryable();
+                return ExecuteDbOperation(context =>
+                {
+                    var query = context.VwFiltroAnidados.AsQueryable();
 
-                return query
-                    .AsNoTracking()
-                    .Select(f => new vw_FiltrosAnidados
-                    {
-                        KEY_FIL_ONA = f.KEY_FIL_ONA,
-                        KEY_FIL_PAI = f.KEY_FIL_PAI,
-                        KEY_FIL_EST = f.KEY_FIL_EST,
-                        KEY_FIL_ESQ = f.KEY_FIL_ESQ,
-                        KEY_FIL_NOR = f.KEY_FIL_NOR,
-                        KEY_FIL_REC = f.KEY_FIL_REC
-                    })
-                    .ToList();
-            });
+                    return query
+                        .AsNoTracking()
+                        .Select(f => new vw_FiltrosAnidados
+                        {
+                            KEY_FIL_ONA = f.KEY_FIL_ONA,
+                            KEY_FIL_PAI = f.KEY_FIL_PAI,
+                            KEY_FIL_EST = f.KEY_FIL_EST,
+                            KEY_FIL_ESQ = f.KEY_FIL_ESQ,
+                            KEY_FIL_NOR = f.KEY_FIL_NOR
+                        })
+                        .ToList();
+                });
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+           
         }
 
         /// <inheritdoc />

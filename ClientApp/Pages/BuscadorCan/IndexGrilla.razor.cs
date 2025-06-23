@@ -141,19 +141,13 @@ namespace ClientApp.Pages.BuscadorCan
         /// <summary>
         /// Método para mostrar el resultados en ventana modal
         /// </summary>
-        private async Task ShowPdfDialog(BuscadorResultadoDataDto resultData)
+        private async void showModalPet(BuscadorResultadoDataDto resultData)
         {
-            // Obtener la URL del certificado
-            var base64 = await GetPdfUrlFromEsquema(resultData);
-
-            if (string.IsNullOrWhiteSpace(base64))
-            {
-                Console.WriteLine("Archivo no encontrado.");
-            }
-
             var parameters = new Dictionary<string, object>();
-            parameters.Add("PdfUrl", base64);
-            await modal.ShowAsync<PdfModal>(title: "Información", parameters: parameters);
+            parameters.Add("resultData", resultData);
+            modal.Style = "font-size: 10px !important;";
+            modal.Size = ModalSize.Regular;
+            await modal.ShowAsync<PetModal>(title: "Información Organizacion", parameters: parameters);
         }
 
         /// <summary>
