@@ -124,22 +124,22 @@ namespace ClientApp.Pages.BuscadorCan
                 if (iCatalogosService != null)
                 {
                     listaEtiquetasGrilla = await iCatalogosService.GetHomologacionAsync<List<VwGrillaDto>>("grid/schema");
-                    var ordenPersonalizado = new Dictionary<int, int>
-                    {
-                        { 84, 1 },
-                        { 78, 2 },
-                        { 82, 3 }, // Eliminado el duplicado
-                        { 83, 4 },
-                        { 90, 5 },
-                        { 93, 6 },
-                        { 81, 7 },
-                        { 92, 8 },
-                        { 91, 9 }
-                    };
+                    //var ordenPersonalizado = new Dictionary<int, int>
+                    //{
+                    //    { 84, 1 },
+                    //    { 78, 2 },
+                    //    { 82, 3 }, // Eliminado el duplicado
+                    //    { 83, 4 },
+                    //    { 90, 5 },
+                    //    { 93, 6 },
+                    //    { 81, 7 },
+                    //    { 92, 8 },
+                    //    { 91, 9 }
+                    //};
 
-                    listaEtiquetasCards = listaEtiquetasGrilla
-                                 ?.OrderBy(x => ordenPersonalizado.ContainsKey(x.IdHomologacion) ? ordenPersonalizado[x.IdHomologacion] : int.MaxValue)
-                                 .ToList();
+                    //listaEtiquetasCards = listaEtiquetasGrilla
+                    //             ?.OrderBy(x => ordenPersonalizado.ContainsKey(x.IdHomologacion) ? ordenPersonalizado[x.IdHomologacion] : int.MaxValue)
+                    //             .ToList();
                 }
             }
             catch (Exception e)
@@ -234,7 +234,7 @@ namespace ClientApp.Pages.BuscadorCan
                         FiltroNorma = selectedFilter?.FirstOrDefault(c => c.CodigoHomologacion == "KEY_FIL_NOR")?.Seleccion ?? new List<string>(),
                         FiltroEsquema = selectedFilter?.FirstOrDefault(c => c.CodigoHomologacion == "KEY_FIL_ESQ")?.Seleccion ?? new List<string>(),
                         FiltroEstado = selectedFilter?.FirstOrDefault(c => c.CodigoHomologacion == "KEY_FIL_EST")?.Seleccion ?? new List<string>(),
-                        FiltroRecomocimiento = selectedFilter?.FirstOrDefault(c => c.CodigoHomologacion == "KEY_FIL_REC")?.Seleccion ?? new List<string>()
+                        //FiltroRecomocimiento = selectedFilter?.FirstOrDefault(c => c.CodigoHomologacion == "KEY_FIL_REC")?.Seleccion ?? new List<string>()
                     };
 
                     var result = await iservicio.PsBuscarPalabraAsync(JsonConvert.SerializeObject(filtros), ActivePageNumber, DisplayPages);
