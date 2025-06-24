@@ -101,7 +101,7 @@ namespace Core.Service
         public async Task<string> GetCoordinates(string address)
         {
             //Mover a appsetting.json
-            var apiKey = configuration["GoogleOAuth:ApiKeyGoogleMaps"];
+            var apiKey = "AIzaSyC7NUCEvrqrrQDDDRLK2q0HSqswPxtBVAk";
             var url = $"{configuration["GoogleOAuth:getcode"]}{Uri.EscapeDataString(address)}&key={apiKey}";
             return await httpClient.GetStringAsync(url);
         }

@@ -61,7 +61,7 @@
                     <div class="content-tarjeta-resultado">
                         <div class="info-tarjeta info-left">
                             @{
-                                var pais = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 84)?.Data;
+                                var pais = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 162)?.Data;
                             }
                             <small class="pais"> @(string.IsNullOrWhiteSpace(pais) ? "" : pais) </small>
 
@@ -102,27 +102,18 @@
                                 </div>
 
                                 @{
-                                    var ong = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 78)?.Data;
+                                    var ong = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 156)?.Data;
                                 }
                                 <p class="poppins-medium"> @(string.IsNullOrWhiteSpace(ong) ? "" : ong)</p>
 
 
                             </div>
 
-                            <div class="razon-social m-top-1 p-bottom-1 border-bottom">
-                                @{
-                                    var razon = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 82)?.Data;
-                                }
-                                <p class="poppins-medium">Razon Social</p>
-                                <p class="poppins-medium-italic c-gray">
-                                    @(string.IsNullOrWhiteSpace(razon) ? "" : razon)
-                                </p>
 
-                            </div>
 
                             <div class="identificacion-unica m-top-1 p-bottom-1 border-bottom">
                                 @{
-                                    var iden = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 83)?.Data;
+                                    var iden = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 160)?.Data;
                                 }
                                 <p class="poppins-medium">Identificacion unica</p>
                                 <p class="poppins-medium-italic c-gray">
@@ -132,9 +123,10 @@
 
                             </div>
                             @{
-                                var acre = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 90)?.Data;
+                                var acre = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 162)?.Data;
                             }
                             <div class="estado-empresa">
+                                <p class="poppins-medium">Pais</p>
                                 @(string.IsNullOrWhiteSpace(acre) ? "Sin Acreditar" : acre)
                             </div>
 
@@ -146,9 +138,8 @@
 
                         <div class="info-tarjeta info-right">
                             @{
-                                var recon = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 81)?.Data;
+                                var recon = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 161)?.Data;
                             }
-                            <small class="poppins-light reconocimiento">Reconocimiento Nacional</small>
                             <h4 class="poppins-medium m-top-1">
                                 @(string.IsNullOrWhiteSpace(recon) ? "" : recon)
                             </h4>
@@ -157,26 +148,33 @@
 
                             <div class="identificacion-unica m-top-1 p-bottom-1">
                                 @{
-                                    var acredi = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 92)?.Data;
+                                    var acredi = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 165)?.Data;
                                 }
                                 <p class="poppins-medium">Norma acreditada</p>
                                 <p class="poppins-light-italic c-gray">@(string.IsNullOrWhiteSpace(acredi) ? "" : acredi)</p>
 
                             </div>
+
+                            <div class="identificacion-unica m-top-1 p-bottom-1">
+                                @{
+                                    var ciudad = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 163)?.Data;
+                                }
+                                <p class="poppins-medium">Ciudad</p>
+                                <p class="poppins-light-italic c-gray">@(string.IsNullOrWhiteSpace(ciudad) ? "" : ciudad)</p>
+
+                            </div>
+
                             <div class="esquema-certificacion p-bottom-1 flex-column">
                                 @{
-                                    var esquema = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 91)?.Data;
-                                    var prod = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 91)?.Data;
+                                    var esquema = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 164)?.Data;
+                              
                                 }
                                 <p class="poppins-medium">Esq. de certificación</p>
                                @*  <span class="organismo-certificacion" @onclick="() => showModalESQ(item)">@(string.IsNullOrWhiteSpace(esquema) ? "" : esquema)</span> *@
                                 <a href="#" @onclick="() => showModalESQ(item)" Color="ButtonColor.Link" class="organismo-certificacion">
                                     @(string.IsNullOrWhiteSpace(esquema) ? "" : esquema)
                                 </a>
-                               <small class="inter-light c-black">
-                                    @(string.IsNullOrWhiteSpace(prod) ? "Muestra, Item o Producto" : prod)
-                                </small>
-                        
+                                                
                                 <button class="abrir-detalle-empresa btn-general btn-border-blue m-top-1" @onclick="() => MostrarDetalle(item)">Ver más</button>
                             </div>
                         </div>

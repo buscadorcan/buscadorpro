@@ -110,7 +110,7 @@ namespace ClientApp.Pages.BuscadorCan
             parameters.Add("resultData", resultData);
             modal.Style = "font-size: 10px !important;";
             modal.Size = ModalSize.Regular;
-            await modal.ShowAsync<OnaModal>(title: "Información Organizacion", parameters: parameters);
+            await modal.ShowAsync<OnaModal>(title: "Información del E&E", parameters: parameters);
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace ClientApp.Pages.BuscadorCan
             parameters.Add("resultData", resultData);
             modal.Style = "font-size: 10px !important;";
             modal.Size = ModalSize.Regular;
-            await modal.ShowAsync<OECModal>(title: "Información del OEC", parameters: parameters);
+            await modal.ShowAsync<OECModal>(title: "Información del E&E", parameters: parameters);
         }
 
         /// <summary>

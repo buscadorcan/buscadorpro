@@ -264,14 +264,14 @@ namespace ClientApp.Pages.BuscadorCan
               .Where(d => d.DataEsquemaJson != null)
               .GroupBy(d => new
               {
-                  Pais = d.DataEsquemaJson.FirstOrDefault(f => f.IdHomologacion == 84)?.Data?.Trim(),
-                  Ciudad = d.DataEsquemaJson.FirstOrDefault(f => f.IdHomologacion == 85)?.Data?.Trim()
+                  Pais = d.DataEsquemaJson.FirstOrDefault(f => f.IdHomologacion == 162)?.Data?.Trim(),
+                  Ciudad = d.DataEsquemaJson.FirstOrDefault(f => f.IdHomologacion == 163)?.Data?.Trim()
               })
               .Where(g => !string.IsNullOrEmpty(g.Key.Pais) && !string.IsNullOrEmpty(g.Key.Ciudad))
               .ToDictionary(
                 g => $"{g.Key.Pais}-{g.Key.Ciudad}",
                 g => g.Select(x => x.DataEsquemaJson
-                                    .FirstOrDefault(f => f.IdHomologacion == 81)?.Data?.Trim())
+                                    .FirstOrDefault(f => f.IdHomologacion == 160)?.Data?.Trim())
                       .Where(oec => !string.IsNullOrEmpty(oec))
                       .Distinct()
                       .Count()
@@ -401,8 +401,8 @@ namespace ClientApp.Pages.BuscadorCan
                 // Buscar el objeto que contiene el ID del ONA basado en la ciudad y el país
                 var resultData = ListDataDto?
                     .FirstOrDefault(d =>
-                        d.DataEsquemaJson?.Any(f => f.IdHomologacion == 84 && f.Data?.Trim() == pais) == true &&
-                        d.DataEsquemaJson?.Any(f => f.IdHomologacion == 85 && f.Data?.Trim() == ciudad) == true);
+                        d.DataEsquemaJson?.Any(f => f.IdHomologacion == 162 && f.Data?.Trim() == pais) == true &&
+                        d.DataEsquemaJson?.Any(f => f.IdHomologacion == 163 && f.Data?.Trim() == ciudad) == true);
 
                 if (resultData == null || resultData.IdONA == null)
                     return "/Icono/default-marker.png"; // Icono por defecto

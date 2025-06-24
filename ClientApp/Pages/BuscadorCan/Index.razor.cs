@@ -137,7 +137,7 @@ namespace ClientApp.Pages.BuscadorCan
                     //    { 91, 9 }
                     //};
 
-                    //listaEtiquetasCards = listaEtiquetasGrilla
+                    listaEtiquetasCards = listaEtiquetasGrilla;
                     //             ?.OrderBy(x => ordenPersonalizado.ContainsKey(x.IdHomologacion) ? ordenPersonalizado[x.IdHomologacion] : int.MaxValue)
                     //             .ToList();
                 }
