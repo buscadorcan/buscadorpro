@@ -9,37 +9,37 @@ $(document).ready(function () {
     }else{
         $('.no-info-div').addClass('ocultar');
     }
-    $.magnificPopup.open({
-        items: {
-            src: '#popupCarrusel'
-        },
-        type: 'inline',
-        midClick: true,
-        callbacks: {
-            open: function () {
-                // Iniciar Owl Carousel cuando se abra el popup
-                $('#popupCarrusel .owl-carousel').owlCarousel({
-                    items: 1,
-                    loop: true,
-                    nav: true,
-                    dots: true,
-                    autoplay: true,
-                    margin: 20,
-                    autoplayTimeout: 3000,
-                    itemsDesktop: false,
-                    itemsDesktopSmall: false,
-                    itemsTablet: false,
-                    itemsMobile: false,
-                    autoPlay: true,
-                    stopOnHover: true
-                });
-            },
-            close: function () {
-                // Destruir el carrusel al cerrar (opcional)
-                $('#popupCarrusel .owl-carousel').trigger('destroy.owl.carousel').removeClass('owl-loaded').find('.owl-stage-outer').children().unwrap();
-            }
-        }
-    });
+    //$.magnificPopup.open({
+    //    items: {
+    //        src: '#popupCarrusel'
+    //    },
+    //    type: 'inline',
+    //    midClick: true,
+    //    callbacks: {
+    //        open: function () {
+    //            // Iniciar Owl Carousel cuando se abra el popup
+    //            $('#popupCarrusel .owl-carousel').owlCarousel({
+    //                items: 1,
+    //                loop: true,
+    //                nav: true,
+    //                dots: true,
+    //                autoplay: true,
+    //                margin: 20,
+    //                autoplayTimeout: 3000,
+    //                itemsDesktop: false,
+    //                itemsDesktopSmall: false,
+    //                itemsTablet: false,
+    //                itemsMobile: false,
+    //                autoPlay: true,
+    //                stopOnHover: true
+    //            });
+    //        },
+    //        close: function () {
+    //            // Destruir el carrusel al cerrar (opcional)
+    //            $('#popupCarrusel .owl-carousel').trigger('destroy.owl.carousel').removeClass('owl-loaded').find('.owl-stage-outer').children().unwrap();
+    //        }
+    //    }
+    //});
 
     $('#filtros-avanzados').change(function () {
         if ($(this).is(':checked')) {

@@ -323,16 +323,16 @@ namespace ClientApp.Pages.BuscadorCan
                 // Obtener icono para esta ONA
                 string? iconoRuta = await ObtenerIconoONA(pais, ciudad);
 
-                // Añadir marcador al mapa
+                // Añadir marcador al mapa 
+                // <span style='font-size:13px;'>{ciudad}, {pais}</span><br/> --> para mostrar ciudad y pais en caso sea necesario
                 markers.Add(new GoogleMapMarker
                 {
                     Position = new GoogleMapMarkerPosition(center.Latitude, center.Longitude),
-                    Title = $"{ciudad}, {pais} – {kvp.Value} OEC",
+                    Title = $"{ciudad}, {pais} – {kvp.Value} E&E",
                     Content = $@"
                     <div style='text-align:center;font-size:12px;'>
-                      <p style='margin:2px 0;font-weight:bold;'>
-                        <span style='font-size:13px;'>{ciudad}, {pais}</span><br/>
-                        <span style='color:red;font-weight:bold;font-size:14px;'>OEC: {kvp.Value}</span>
+                      <p style='margin:2px 0;font-weight:bold;'>                 
+                        <span style='color:red;font-weight:bold;font-size:14px;'>E&E: {kvp.Value}</span>
                       </p>
                       <img src='{iconoRuta}' width='28' height='28' style='border-radius:50%;' />
                     </div>"

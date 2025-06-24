@@ -49,7 +49,7 @@
                         var dato = context?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == item.IdHomologacion)?.Data;
                     }
 
-                    @if (dato != null && dato.Contains("$$") && (item.IdHomologacion == 64 || item.IdHomologacion == 72 || item.IdHomologacion == 73))
+                   @*  @if (dato != null && dato.Contains("$$") && (item.IdHomologacion == 64 || item.IdHomologacion == 72 || item.IdHomologacion == 73))
                     {
                         string formulaExtraida = ExtraerFormula(dato);
                         <div class="latex-wrapper">
@@ -59,7 +59,7 @@
                     else
                     {
                         @((MarkupString)dato)
-                    }
+                    } *@
                 </ChildContent>
             </GridColumn>
         }
