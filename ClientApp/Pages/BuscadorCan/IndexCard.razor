@@ -60,11 +60,7 @@
                 {
                     <div class="content-tarjeta-resultado">
                         <div class="info-tarjeta info-left">
-                            @{
-                                var pais = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 162)?.Data;
-                            }
-                            <small class="pais"> @(string.IsNullOrWhiteSpace(pais) ? "" : pais) </small>
-
+                    
                             <div class="empresa">
                                 <div>
                                     @{
@@ -115,7 +111,7 @@
                                 @{
                                     var iden = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 160)?.Data;
                                 }
-                                <p class="poppins-medium">Identificacion unica</p>
+                                <p class="poppins-medium"> Nombre del T&eacutecnico </p>
                                 <p class="poppins-medium-italic c-gray">
                                     @(string.IsNullOrWhiteSpace(iden) ? "" : iden)
                                 </p>
@@ -125,15 +121,12 @@
                             @{
                                 var acre = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 162)?.Data;
                             }
-                            <div class="estado-empresa">
-                                <p class="poppins-medium">Pais</p>
-                                <p> @(string.IsNullOrWhiteSpace(acre) ? "Sin Acreditar" : acre) </p>
-                            </div>
+                            <p class="poppins-medium">Pais</p>
+                            <p class="poppins-light-italic c-gray">@(string.IsNullOrWhiteSpace(acre) ? "" : acre)</p>
 
-                            <!--TODO: Cambiar el modal a PetModal-->
-                         @*    <button class="abrir-pdf-empresa m-top-half-1" @onclick="() => AbrirPdf(item)">
+                            <button class="abrir-pdf-empresa m-top-half-1" @onclick="() => showModalPet(item)">
                                 <img src="/images/ico-pdf.svg" width="40" height="40">
-                            </button> *@
+                            </button>
                         </div>
 
                         <div class="info-tarjeta info-right">
@@ -169,7 +162,7 @@
                                     var esquema = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 164)?.Data;
                               
                                 }
-                                <p class="poppins-medium">Esq. de certificación</p>
+                                <p class="poppins-medium">Esquema de Acreditación</p>
                                @*  <span class="organismo-certificacion" @onclick="() => showModalESQ(item)">@(string.IsNullOrWhiteSpace(esquema) ? "" : esquema)</span> *@
                                 <a href="#" @onclick="() => showModalESQ(item)" Color="ButtonColor.Link" class="organismo-certificacion">
                                     @(string.IsNullOrWhiteSpace(esquema) ? "" : esquema)
