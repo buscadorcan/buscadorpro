@@ -111,11 +111,14 @@
                                 @{
                                     var iden = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 160)?.Data;
                                 }
+
                                 <p class="poppins-medium"> Nombre del T&eacutecnico </p>
                                 <p class="poppins-medium-italic c-gray">
-                                    @(string.IsNullOrWhiteSpace(iden) ? "" : iden)
+                                    <NavLink @onclick="() => showModalOEC(item)">
+                                        <span style="color: #007bff; text-decoration: underline;">@(string.IsNullOrWhiteSpace(iden.Trim()) ? "ModalPrueba" : iden)</span>
+                                    </NavLink>                               
                                 </p>
-
+                               
 
                             </div>
                             @{
@@ -159,8 +162,7 @@
 
                             <div class="esquema-certificacion p-bottom-1 flex-column">
                                 @{
-                                    var esquema = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 164)?.Data;
-                              
+                                    var esquema = item?.DataEsquemaJson?.FirstOrDefault(f => f.IdHomologacion == 164)?.Data;                          
                                 }
                                 <p class="poppins-medium">Esquema de Acreditación</p>
                                @*  <span class="organismo-certificacion" @onclick="() => showModalESQ(item)">@(string.IsNullOrWhiteSpace(esquema) ? "" : esquema)</span> *@

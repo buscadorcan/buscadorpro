@@ -1293,6 +1293,10 @@ button.btn.icono2 {
     margin-right: 8px;
 }
 
+.modal-title {
+    font-size: 12px !important;
+}
+
 /* ======= Reglas sólo en móvil (<=768px) ======= */
 @media (max-width: 768px) {
 
