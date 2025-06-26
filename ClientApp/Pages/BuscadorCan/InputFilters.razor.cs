@@ -390,5 +390,10 @@ namespace ClientApp.Pages.BuscadorCan
         {
             _objRef?.Dispose();
         }
+
+        public async Task LimpiarFiltrosDesdePadre()
+        {
+            await LimpiarFiltros();
+        }
     }
 }

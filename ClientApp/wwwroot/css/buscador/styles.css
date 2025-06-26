@@ -1293,8 +1293,12 @@ button.btn.icono2 {
     margin-right: 8px;
 }
 
-.modal-title {
-    font-size: 1rem !important;
+.grid-empty-message {
+    color: #007bff; /* azul Bootstrap */
+    font-size: 1.3rem !important; /* tamaño de fuente más grande */
+    font-weight: 500;
+    text-align: center;
+    padding: 1rem;
 }
 
 /* ======= Reglas sólo en móvil (<=768px) ======= */

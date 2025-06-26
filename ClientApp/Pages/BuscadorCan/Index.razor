@@ -21,7 +21,8 @@
 
 @if (mostrarFiltrosAvanzados)
 {
-    <InputFilters onFilterChange="HandleFilterChange"
+    <InputFilters @ref="inputFiltersRef"
+                  onFilterChange="HandleFilterChange"
                   isGridVisibleChanged="isGridVisibleChanged"
                   isGridVisible="isGridVisible" />
 }

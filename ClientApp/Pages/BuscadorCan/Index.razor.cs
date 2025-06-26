@@ -114,6 +114,8 @@ namespace ClientApp.Pages.BuscadorCan
 
         private bool isSearchingExport = false;
 
+        private InputFilters? inputFiltersRef;
+
         /// <summary>
         /// Método de inicialización del componente.
         /// </summary>
@@ -332,10 +334,17 @@ namespace ClientApp.Pages.BuscadorCan
             await iBusquedaService.AddEventTrackingAsync(objEventTracking);
         }
 
-        private void CambiarVisibilidadFiltrosAvanzados(bool mostrar)
+        private async void CambiarVisibilidadFiltrosAvanzados(bool mostrar)
         {
             mostrarFiltrosAvanzados = mostrar;
+
+            // Si ocultamos los filtros, entonces limpiarlos
+            if (!mostrar && inputFiltersRef is not null)
+            {
+                await inputFiltersRef.LimpiarFiltrosDesdePadre();
+            }
         }
+
 
         private async Task MostrarOverlayTemporal()
         {

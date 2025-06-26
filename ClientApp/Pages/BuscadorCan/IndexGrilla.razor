@@ -40,6 +40,13 @@
                   Height="100"
                   Unit="Unit.Percentage"
                   EmptyText="No hay información disponible">
+
+                <GridEmptyDataTemplate TItem="BuscadorResultadoDataDto">
+                        <div class="grid-empty-message">
+                            No hay información disponible
+                        </div>
+                </GridEmptyDataTemplate>
+
                 <GridColumn TItem="BuscadorResultadoDataDto" class="grid-header">
                     <HeaderContent>
                         Informacion<br />de Organismos<br />de Acreditación
