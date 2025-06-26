@@ -114,9 +114,7 @@
 
                                 <p class="poppins-medium"> Nombre del T&eacutecnico </p>
                                 <p class="poppins-medium-italic c-gray">
-                                    <NavLink @onclick="() => showModalOEC(item)">
-                                        <span style="color: #007bff; text-decoration: underline;">@(string.IsNullOrWhiteSpace(iden.Trim()) ? "ModalPrueba" : iden)</span>
-                                    </NavLink>                               
+                                    @(string.IsNullOrWhiteSpace(iden.Trim()) ? "" : iden)
                                 </p>
                                
 
