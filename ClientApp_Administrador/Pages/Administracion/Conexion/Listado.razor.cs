@@ -41,53 +41,32 @@ namespace ClientAppAdministrador.Pages.Administracion.Conexion
         private EventTrackingDto objEventTracking { get; set; } = new();
         private bool IsLoading { get; set; } = false;
         private int ProgressValue { get; set; } = 0;
-        private int PageSize = 10; // Cantidad de registros por página
-        private int CurrentPage = 1;
-
-        private IEnumerable<ONAConexionDto> PaginatedItems => listasHevd
-            .Skip((CurrentPage - 1) * PageSize)
-            .Take(PageSize);
-
-        private int TotalPages => (listasHevd?.Count ?? 0) > 0
-                     ? (int)Math.Ceiling((double)(listasHevd?.Count ?? 0) / PageSize)
-                     : 1;
-
-        private bool CanGoPrevious => CurrentPage > 1;
-        private bool CanGoNext => CurrentPage < TotalPages;
-
-
         private string sortColumn = nameof(ONAConexionDto.Host);
         private bool sortAscending = true;
-
         private bool isLoading = false;
 
-        /// <summary>
-        /// PreviousPage: Previo de las paginas del listado.
-        /// </summary>
-        private void PreviousPage()
+        // 🆕 Paginación
+        private int DisplayPages = 10;
+        private int ActivePageNumber = 1;
+        private int TotalItems => listasHevd?.Count ?? 0;
+        private int TotalPages => TotalItems > 0 ? (int)Math.Ceiling((double)TotalItems / DisplayPages) : 1;
+
+        private IEnumerable<ONAConexionDto> PaginatedItems => listasHevd?
+            .Skip((ActivePageNumber - 1) * DisplayPages)
+            .Take(DisplayPages)
+            .ToList() ?? new List<ONAConexionDto>();
+
+        private async Task OnDisplayPagesChanged(int newDisplayPages)
         {
-            if (CanGoPrevious)
-            {
-                CurrentPage--;
-
-                objEventTracking.CodigoHomologacionMenu = Routes.CONEXION;
-                objEventTracking.ParametroJson = Constantes.JSON_VACIO;
-                objEventTracking.UbicacionJson = Constantes.VACIO;
-
-                iBusquedaService.AddEventTrackingAsync(objEventTracking);
-            }
+            DisplayPages = newDisplayPages;
+            ActivePageNumber = 1;
+            await LoadConexion();
         }
 
-        /// <summary>
-        /// NextPage: Proximas paginas del listado.
-        /// </summary>
-        private void NextPage()
+        private async Task OnActivePageNumberChanged(int newPage)
         {
-            if (CanGoNext)
-            {
-                CurrentPage++;
-            }
-
+            ActivePageNumber = newPage;
+            await LoadConexion();
         }
 
         public DateTime? HoraMigracion1Time
@@ -136,11 +115,6 @@ namespace ClientAppAdministrador.Pages.Administracion.Conexion
                     int IdOna = await iLocalStorageService.GetItemAsync<int>(Inicializar.Datos_Usuario_IdOna_Local);
                     listasHevd = await iConexionService.GetOnaConexionByOnaListAsync(IdOna) ?? new List<ONAConexionDto>();
                 }
-            }
-            // Ajusta la paginación si la lista está vacía o cambia
-            if (listasHevd.Count > 0 && CurrentPage > TotalPages)
-            {
-                CurrentPage = TotalPages;
             }
             isLoading = false;
         }
@@ -421,6 +395,14 @@ namespace ClientAppAdministrador.Pages.Administracion.Conexion
             listasHevd = sortAscending
                 ? listasHevd.OrderBy(x => x.GetType().GetProperty(sortColumn)?.GetValue(x, null)).ToList()
                 : listasHevd.OrderByDescending(x => x.GetType().GetProperty(sortColumn)?.GetValue(x, null)).ToList();
+        }
+
+        private async Task LoadConexion()
+        {
+            if (iConexionService != null)
+            {
+                listasHevd = await iConexionService.GetConexionsAsync();
+            }
         }
 
         private async Task ExportarExcel()

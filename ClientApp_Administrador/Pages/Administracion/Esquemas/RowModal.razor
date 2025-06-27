@@ -5,6 +5,7 @@
 @using System.Text
 @using iTextSharp.text
 @using iTextSharp.text.pdf
+@using ClientAppAdministrador.Pages.Components;
 
 <div class="ds-title-section">
     <div class="ds-buttons-content">
@@ -72,11 +73,14 @@
             </tbody>
         </table>
 
-        <div class="pagination-container">
-            <button class="btn btn-primary btn-sm" @onclick="PreviousPage" disabled="@(!CanGoPrevious)">⏪</button>
-            <span class="pagination-text inter-regular-normal-comet-14px">Página @CurrentPage de @TotalPages</span>
-            <button class="btn btn-primary btn-sm" @onclick="NextPage" disabled="@(!CanGoNext)">⏩</button>
-        </div>
+		<!-- Controles de paginación -->
+		<InputPaginations TotalItems="@TotalItems"
+						  TotalPages="@TotalPages"
+						  DisplayPages="@DisplayPages"
+						  ActivePageNumber="@ActivePageNumber"
+						  DisplayPagesChanged="OnDisplayPagesChanged"
+						  ActivePageNumberChanged="OnActivePageNumberChanged"
+						  OnPageChanging="LoadGrupo" />
     </div>
 
 

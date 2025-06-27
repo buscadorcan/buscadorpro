@@ -1,0 +1,16 @@
+<XML ID="Microsoft Search Thesaurus">
+
+  <!--Commented out (SQL Server 2008)-->
+    <thesaurus xmlns="x-schema:tsSchema.xml">
+  <diacritics_sensitive>0</diacritics_sensitive>
+  <expansion>
+    <sub>HABAS SECAS</sub>
+    <sub>judia</sub>
+  </expansion>
+  <expansion>
+    <sub>AGUA COMBINADA</sub>
+    <sub>water</sub>
+  </expansion>
+</thesaurus>
+
+</XML>

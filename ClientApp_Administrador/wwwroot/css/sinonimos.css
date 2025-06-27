@@ -168,3 +168,27 @@
     color: white;
     text-decoration: none;
 }
+
+
+@media (max-width: 480px) {
+
+    .ancho_70 {
+        width: 100% !important;
+    }
+
+    .input_control {
+        border-radius: 10px !important;
+    }
+
+    .div_flex {
+        justify-content: center !important;
+    }
+
+    .btn_control {
+        border-top-right-radius: 10px !important;
+        border-top-left-radius: 10px !important;
+        border-bottom-left-radius: 10px !important;
+        border-bottom-right-radius: 10px !important;
+        margin-top: 1rem !important;
+    }
+}

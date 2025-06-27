@@ -5,18 +5,22 @@
 		<Compile Remove="Mappers\**" />
 		<Compile Remove="Repositories\**" />
 		<Compile Remove="Service\**" />
+		<Compile Remove="wwwroot\descargas\**" />
 		<Content Remove="Icono\**" />
 		<Content Remove="Mappers\**" />
 		<Content Remove="Repositories\**" />
 		<Content Remove="Service\**" />
+		<Content Remove="wwwroot\descargas\**" />
 		<EmbeddedResource Remove="Icono\**" />
 		<EmbeddedResource Remove="Mappers\**" />
 		<EmbeddedResource Remove="Repositories\**" />
 		<EmbeddedResource Remove="Service\**" />
+		<EmbeddedResource Remove="wwwroot\descargas\**" />
 		<None Remove="Icono\**" />
 		<None Remove="Mappers\**" />
 		<None Remove="Repositories\**" />
 		<None Remove="Service\**" />
+		<None Remove="wwwroot\descargas\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -36,7 +40,6 @@
 	<ItemGroup>
 		<Folder Include="Logs\" />
 		<Folder Include="wwwroot\Icono\" />
-		<Folder Include="wwwroot\descargas\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <None Include="wwwroot\Files\tokens\Google.Apis.Auth.OAuth2.Responses.TokenResponse-buscadorcan%40gmail.com" />

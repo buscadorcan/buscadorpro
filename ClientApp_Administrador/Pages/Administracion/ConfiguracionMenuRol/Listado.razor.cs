@@ -1,4 +1,4 @@
-using BlazorBootstrap;
+Ôªøusing BlazorBootstrap;
 using Blazored.LocalStorage;
 using SharedApp.Helpers;
 using Infractruture.Interfaces;
@@ -15,7 +15,6 @@ namespace ClientAppAdministrador.Pages.Administracion.ConfiguracionMenuRol
         private int? selectedIdHMenu;
         private List<MenuRolDto>? listaMenus;
         private Button saveButton = default!;
-
         private bool isLoading = false;
 
         [Inject]
@@ -34,6 +33,30 @@ namespace ClientAppAdministrador.Pages.Administracion.ConfiguracionMenuRol
         private List<MenuRolDto> listaMenusOriginal = new();
         private bool estadoActivo;
         private MenuRolDto configuracionMenu = new MenuRolDto();
+
+        // üÜï Paginaci√≥n
+        private int DisplayPages = 10;
+        private int ActivePageNumber = 1;
+        private int TotalItems => listaMenus?.Count ?? 0;
+        private int TotalPages => TotalItems > 0 ? (int)Math.Ceiling((double)TotalItems / DisplayPages) : 1;
+
+        private IEnumerable<MenuRolDto> PaginatedItems => listaMenus?
+            .Skip((ActivePageNumber - 1) * DisplayPages)
+            .Take(DisplayPages)
+            .ToList() ?? new List<MenuRolDto>();
+
+        private async Task OnDisplayPagesChanged(int newDisplayPages)
+        {
+            DisplayPages = newDisplayPages;
+            ActivePageNumber = 1;
+            await LoadMenus();
+        }
+
+        private async Task OnActivePageNumberChanged(int newPage)
+        {
+            ActivePageNumber = newPage;
+            await LoadMenus();
+        }
         protected override async Task OnInitializedAsync()
         {
             isLoading = true;
@@ -54,39 +77,6 @@ namespace ClientAppAdministrador.Pages.Administracion.ConfiguracionMenuRol
         private async Task LoadMenus()
         {
             listaMenus = await iMenuService.GetMenusAsync() ?? new List<MenuRolDto>();
-            if (listaMenus.Count > 0 && CurrentPage > TotalPages)
-            {
-                CurrentPage = TotalPages;
-            }
-        }
-
-        private int PageSize = 10;
-        private int CurrentPage = 1;
-        private IEnumerable<MenuRolDto> PaginatedItems => listaMenus
-            .Skip((CurrentPage - 1) * PageSize)
-            .Take(PageSize);
-
-        private int TotalPages => (listaMenus?.Count ?? 0) > 0
-        ? (int)Math.Ceiling((double)(listaMenus?.Count ?? 0) / PageSize)
-        : 1;
-
-        private bool CanGoPrevious => CurrentPage > 1;
-        private bool CanGoNext => CurrentPage < TotalPages;
-
-        private void PreviousPage()
-        {
-            if (CanGoPrevious)
-            {
-                CurrentPage--;
-            }
-        }
-
-        private void NextPage()
-        {
-            if (CanGoNext)
-            {
-                CurrentPage++;
-            }
         }
 
         private void OpenDeleteModal(int? idHRol, int? idHMenu)
@@ -103,7 +93,7 @@ namespace ClientAppAdministrador.Pages.Administracion.ConfiguracionMenuRol
             showModal = false;
         }
 
-        //ModificaciÛn: No recargar toda la lista despuÈs de eliminar un elemento
+        //Modificaci√≥n: No recargar toda la lista despu√©s de eliminar un elemento
         private async Task ConfirmDelete(MenuRolDto menu)
         {
             objEventTracking.CodigoHomologacionMenu = Routes.MENU_ROL;
@@ -118,8 +108,6 @@ namespace ClientAppAdministrador.Pages.Administracion.ConfiguracionMenuRol
 
             if (menu != null && iMenuService != null)
             {
-                // Guardamos la p·gina actual antes de la modificaciÛn
-                int paginaActual = CurrentPage;
 
                 var result = await iMenuService.DeleteMenuAsync(menu.IdHRol, menu.IdHMenu);
                 if (result)
@@ -131,20 +119,18 @@ namespace ClientAppAdministrador.Pages.Administracion.ConfiguracionMenuRol
                         menuModificado.Estado = menuModificado.Estado == Constantes.ACTIVO ? "X" : Constantes.ACTIVO;
                     }
 
-                    // Restauramos la p·gina actual
-                    CurrentPage = paginaActual;
-
+ 
                     CloseModal();
                     if (menuModificado.Estado == Constantes.ACTIVO)
                     {
-                        toastService?.CreateToastMessage(ToastType.Success, "Men˙ activado correctamente.");
+                        toastService?.CreateToastMessage(ToastType.Success, "Men√∫ activado correctamente.");
                     }
                     else
                     {
-                        toastService?.CreateToastMessage(ToastType.Success, "Men˙ desactivado correctamente.");
+                        toastService?.CreateToastMessage(ToastType.Success, "Men√∫ desactivado correctamente.");
                     }
 
-                    StateHasChanged(); // Forzar actualizaciÛn sin recargar toda la p·gina
+                    StateHasChanged(); // Forzar actualizaci√≥n sin recargar toda la p√°gina
                 }
                 else
                 {
@@ -162,7 +148,7 @@ namespace ClientAppAdministrador.Pages.Administracion.ConfiguracionMenuRol
 
             if (string.IsNullOrWhiteSpace(filtroBusqueda))
             {
-                // Restaurar la lista original y la paginaciÛn
+                // Restaurar la lista original y la paginaci√≥n
                 listaMenus = new List<MenuRolDto>(listaMenusOriginal);
             }
             else
@@ -173,8 +159,7 @@ namespace ClientAppAdministrador.Pages.Administracion.ConfiguracionMenuRol
                     .ToList();
             }
 
-            // Reiniciar a la primera p·gina para mostrar resultados correctamente
-            CurrentPage = 1;
+            // Reiniciar a la primera p√°gina para mostrar resultados correctamente
 
             isLoading = false;
         }

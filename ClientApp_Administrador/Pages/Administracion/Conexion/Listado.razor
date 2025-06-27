@@ -7,14 +7,7 @@
 @using System.Text
 @using iTextSharp.text
 @using iTextSharp.text.pdf
-
-@*
-    /// <summary>
-    /// Page: Listado Formulario Conexion
-    /// Concepto: Listado de conexiones externas del programa para editar o registar.
-    /// Tipo: EXCEL, MSSQLSERVER, MYSQL, POSTGREST, SQLLITE
-    /// </summary>
-*@
+@using ClientAppAdministrador.Pages.Components;
 
 @if (IsLoading)
 {
@@ -53,7 +46,7 @@
 
 		<!-- Botón Agregar Registro -->
 		<a href="@Routes.NUEVO_CONEXION" class="ds-btn-general ds-btn-yellow">
-			<div class="button-3 headingheadline4-h4">Agregar Registro</div>
+			<div class="button-3 headingheadline4-h4">Nuevo</div>
 		</a>
 	</div>
 
@@ -166,11 +159,14 @@
 			</table>
 
 			<!-- Controles de paginación -->
-			<div class="pagination-container">
-				<button class="btn btn-primary btn-sm" @onclick="PreviousPage" disabled="@(!CanGoPrevious)">⏪</button>
-				<span class="pagination-text inter-regular-normal-comet-14px">Página @CurrentPage de @TotalPages</span>
-				<button class="btn btn-primary btn-sm" @onclick="NextPage" disabled="@(!CanGoNext)">⏩</button>
-			</div>
+			<InputPaginations TotalItems="@TotalItems"
+							  TotalPages="@TotalPages"
+							  DisplayPages="@DisplayPages"
+							  ActivePageNumber="@ActivePageNumber"
+							  DisplayPagesChanged="OnDisplayPagesChanged"
+							  ActivePageNumberChanged="OnActivePageNumberChanged"
+							  OnPageChanging="LoadConexion" />
+
 		</div>
 	}
 </div>

@@ -7,6 +7,7 @@
 @using System.Text
 @using iTextSharp.text
 @using iTextSharp.text.pdf
+@using ClientAppAdministrador.Pages.Components;
 
 <PageTitle>Migraciones desde Excel</PageTitle>
 
@@ -29,7 +30,7 @@
 
 		<a href="/nueva-migarcion-excel" class="ds-btn-general ds-btn-yellow">
 			<img src="admin/img/add-24px.svg"
-				 width="19" height="19">Importar Excel
+				 width="19" height="19">Importar
 		</a>
 	</div>
 </div>
@@ -93,11 +94,13 @@
 		</table>
 
 		<!-- Controles de paginación -->
-		<div class="pagination-container">
-			<button class="btn btn-primary btn-sm" @onclick="Anterior" disabled="@(!(currentPage > 1))">⏪</button>
-			<span class="pagination-text inter-regular-normal-comet-14px">Página @currentPage de @totalPages</span>
-			<button class="btn btn-primary btn-sm" @onclick="Siguiente" disabled="@(!(currentPage < totalPages))">⏩</button>
-		</div>
+		<InputPaginations TotalItems="@TotalItems"
+						  TotalPages="@TotalPages"
+						  DisplayPages="@DisplayPages"
+						  ActivePageNumber="@ActivePageNumber"
+						  DisplayPagesChanged="OnDisplayPagesChanged"
+						  ActivePageNumberChanged="OnActivePageNumberChanged"
+						  OnPageChanging="CargarDatos" />
 	}
 </div>
 

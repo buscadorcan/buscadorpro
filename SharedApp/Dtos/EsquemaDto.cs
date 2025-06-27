@@ -25,5 +25,6 @@ namespace SharedApp.Dtos
 
         [StringLength(1, ErrorMessage = "El campo Estado debe tener un solo carácter (por ejemplo, 'A' para activo).")]
         public string? Estado { get; set; }
+        public string ColumnaVistaPkFk { get; set; } = "N";
     }
 }

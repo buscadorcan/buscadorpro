@@ -1,4 +1,4 @@
-using Infractruture.Interfaces;
+锘縰sing Infractruture.Interfaces;
 using iTextSharp.text.pdf;
 using iTextSharp.text;
 using Microsoft.AspNetCore.Components;
@@ -14,73 +14,43 @@ namespace ClientAppAdministrador.Pages.Administracion.Esquemas
     public partial class RowModal
     {
         /// <summary>
-        /// Lista de columnas que se mostrar醤 en la tabla.
+        /// Lista de columnas que se mostrar谩n en la tabla.
         /// </summary>
         [Parameter] public List<HomologacionDto> columnas { get; set; }
         /// <summary>
-        /// Lista de homologaciones disponibles para selecci髇.
+        /// Lista de homologaciones disponibles para selecci贸n.
         /// </summary>
-        [Parameter] public List<HomologacionDto> listaVwHomologacion { get; set;}
-        /// <summary>
-        /// N鷐ero de elementos por p醙ina en la tabla.
-        /// </summary>
-        private int PageSize = 10; // Cantidad de registros por p醙ina
-        /// <summary>
-        /// P醙ina actual de la tabla.
-        /// </summary>
-        private int CurrentPage = 1;
+        [Parameter] public List<HomologacionDto> listaVwHomologacion { get; set; }
 
-        /// <summary>
-        /// Obtiene los elementos paginados para mostrar en la tabla.
-        /// </summary>
-        private IEnumerable<HomologacionDto> PaginatedItems => columnas
-            .Skip((CurrentPage - 1) * PageSize)
-            .Take(PageSize);
+        // 馃啎 Paginaci贸n
+        private int DisplayPages = 10;
+        private int ActivePageNumber = 1;
+        private int TotalItems => columnas?.Count ?? 0;
+        private int TotalPages => TotalItems > 0 ? (int)Math.Ceiling((double)TotalItems / DisplayPages) : 1;
 
-        /// <summary>
-        /// Calcula el n鷐ero total de p醙inas en funci髇 del tama駉 de la lista.
-        /// </summary>
-        private int TotalPages => columnas.Count > 0 ? (int)Math.Ceiling((double)columnas.Count / PageSize) : 1;
-        /// <summary>
-        /// Determina si se puede retroceder a la p醙ina anterior.
-        /// </summary>
-        private bool CanGoPrevious => CurrentPage > 1;
-        /// <summary>
-        /// Determina si se puede avanzar a la siguiente p醙ina.
-        /// </summary>
-        private bool CanGoNext => CurrentPage < TotalPages;
+        private IEnumerable<HomologacionDto> PaginatedItems => listaVwHomologacion?
+            .Skip((ActivePageNumber - 1) * DisplayPages)
+            .Take(DisplayPages)
+            .ToList() ?? new List<HomologacionDto>();
 
-        /// <summary>
-        /// M閠odo para navegar a la p醙ina anterior en la tabla.
-        /// </summary>
-        private void PreviousPage()
+        private async Task OnDisplayPagesChanged(int newDisplayPages)
         {
-            if (CanGoPrevious)
-            {
-                CurrentPage--;
-            }
+            DisplayPages = newDisplayPages;
+            ActivePageNumber = 1;
+            LoadGrupo();
         }
 
-        /// <summary>
-        /// Metodo para navegar a la siguiente p醙ina en la tabla.
-        /// </summary>
-        private void NextPage()
+        private async Task OnActivePageNumberChanged(int newPage)
         {
-            if (CanGoNext)
-            {
-                CurrentPage++;
-            }
+            ActivePageNumber = newPage;
+            LoadGrupo();
         }
 
-        /// <summary>
-        /// M閠odo asincr髇ico que ajusta la paginaci髇 cuando la lista de columnas cambia.
-        /// </summary>
-        protected override async Task OnInitializedAsync()
+        private void LoadGrupo()
         {
-            
-            if (columnas.Count > 0 && CurrentPage > TotalPages)
+            if (columnas != null)
             {
-                CurrentPage = TotalPages;
+                ActivePageNumber = TotalPages;
             }
         }
 
@@ -117,7 +87,7 @@ namespace ClientAppAdministrador.Pages.Administracion.Esquemas
             var worksheet = package.Workbook.Worksheets.Add("Homologaciones");
 
             // Agregar encabezados
-            worksheet.Cells[1, 1].Value = "Vista C骴igo Homologado";
+            worksheet.Cells[1, 1].Value = "Vista C贸digo Homologado";
             worksheet.Cells[1, 2].Value = "Texto a Mostrar en la Web";
             worksheet.Cells[1, 3].Value = "Tooltip Web";
             worksheet.Cells[1, 4].Value = "Mostrar";
@@ -137,7 +107,7 @@ namespace ClientAppAdministrador.Pages.Administracion.Esquemas
                 row++;
             }
 
-            worksheet.Cells.AutoFitColumns(); // Ajustar autom醫icamente las columnas
+            worksheet.Cells.AutoFitColumns(); // Ajustar autom谩ticamente las columnas
 
             var fileName = "Homologaciones_Export.xlsx";
             var fileBytes = package.GetAsByteArray();
@@ -160,7 +130,7 @@ namespace ClientAppAdministrador.Pages.Administracion.Esquemas
             var font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
             var table = new PdfPTable(6) { WidthPercentage = 100 };
 
-            table.AddCell(new Phrase("Vista C骴igo Homologado", font));
+            table.AddCell(new Phrase("Vista C贸digo Homologado", font));
             table.AddCell(new Phrase("Texto a Mostrar en la Web", font));
             table.AddCell(new Phrase("Tooltip Web", font));
             table.AddCell(new Phrase("Mostrar", font));
@@ -187,5 +157,5 @@ namespace ClientAppAdministrador.Pages.Administracion.Esquemas
             await JSRuntime.InvokeVoidAsync("downloadFile", fileName, "application/pdf", fileBase64);
         }
     }
-    
+
 }

@@ -201,6 +201,7 @@ button, input, select, textarea {
     transition: transform 450ms ease, width 450ms ease;
     box-shadow: 0px 1px 3px 0px rgba(54, 74, 99, 0.05);
     transform: translateX(0);
+    z-index: 999999;
 }
 
 .dashboard-sidebar.translate-hide {
@@ -359,6 +360,7 @@ button, input, select, textarea {
     position: fixed;
     background: #ffffff;
     top: 0;
+    z-index: 9999;
 }
 
 .ds-responsive-logo-menu {
@@ -629,7 +631,7 @@ button, input, select, textarea {
 .ds-content-section-half {
     width: 48%;
     display: flex;
-    align-items: flex-start;
+  /*  align-items: flex-start;*/
     flex-direction: column;
 }
 
@@ -818,4 +820,40 @@ button, input, select, textarea {
     background-color: var(--bs-accordion-bg);
     border: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);
     padding: 10px;
+}
+
+@media (max-width: 600px) {
+    .ds-footer {
+        padding-left: 15px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .ds-buttons-content {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1px;
+    }
+
+    .ancho_70 {
+        width: 100% !important;
+    }
+
+    .input_control {
+        border-radius: 10px !important;
+    }
+
+    .div_flex {
+        justify-content: center !important;
+    }
+
+    .btn_control {
+        border-top-right-radius: 10px !important;
+        border-top-left-radius: 10px !important;
+        border-bottom-left-radius: 10px !important;
+        border-bottom-right-radius: 10px !important;
+        margin-top: 1rem !important;
+    }
 }

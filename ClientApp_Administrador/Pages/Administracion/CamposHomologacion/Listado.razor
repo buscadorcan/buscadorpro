@@ -6,6 +6,7 @@
 @using SharedApp.Dtos
 @using iTextSharp.text
 @using iTextSharp.text.pdf
+@using ClientAppAdministrador.Pages.Components;
 
 <PageTitle>Campos Homologación</PageTitle>
 
@@ -33,7 +34,7 @@
 			{
 				<!-- Botón Agregar Registro -->
 				<a class="ds-btn-general ds-btn-yellow" href="@($"/nuevo-campos-homologacion/{homologacionSelected?.IdHomologacion}")">
-					<div class="button-3 headingheadline4-h4">Agregar Registro</div>
+					<div class="button-3 headingheadline4-h4">Nuevo</div>
 				</a>
 			}
 		}
@@ -98,11 +99,13 @@
 				</table>
 
 				<!-- Controles de paginación -->
-				<div class="pagination-container">
-					<button class="btn btn-primary btn-sm" @onclick="Anterior" disabled="@(!(currentPage > 1))">⏪</button>
-					<span class="pagination-text inter-regular-normal-comet-14px">Página @currentPage de @totalPages</span>
-					<button class="btn btn-primary btn-sm" @onclick="Siguiente" disabled="@(!(currentPage < totalPages))">⏩</button>
-				</div>
+				<InputPaginations TotalItems="@TotalItems"
+								  TotalPages="@TotalPages"
+								  DisplayPages="@DisplayPages"
+								  ActivePageNumber="@ActivePageNumber"
+								  DisplayPagesChanged="OnDisplayPagesChanged"
+								  ActivePageNumberChanged="OnActivePageNumberChanged"
+								  OnPageChanging="CargarDatos" />
 			</div>
 		</div>
 	}

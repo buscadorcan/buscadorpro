@@ -1,72 +1,64 @@
-using BlazorBootstrap;
+ï»¿using BlazorBootstrap;
 using Blazored.LocalStorage;
-using SharedApp.Helpers;
 using Infractruture.Interfaces;
 using Microsoft.AspNetCore.Components;
-using SharedApp.Dtos;
 using Microsoft.JSInterop;
-using iTextSharp.text;
-using System.Drawing.Printing;
-
+using SharedApp.Dtos;
+using SharedApp.Helpers;
 
 namespace ClientAppAdministrador.Pages.Administracion.MigracionExcel
 {
-    /// <summary>
-    /// Componente de listado de logs de migración de archivos Excel.
-    /// Controla el acceso según el rol del usuario y permite visualizar registros de migración.
-    /// </summary>
     public partial class Listado
     {
         private bool isLoading = false;
-        /// <summary>
-        /// Servicio de navegación para redirigir a otras páginas.
-        /// </summary>
-        [Inject] public NavigationManager? navigationManager { get; set; }
-        /// <summary>
-        /// Servicio de almacenamiento local en el navegador.
-        /// </summary>
-        [Inject] ILocalStorageService iLocalStorageService { get; set; }
-        /// <summary>
-        /// Servicio de migración de archivos Excel.
-        /// </summary>
-        [Inject] private IMigracionExcelService? iMigracionExcelService { get; set; }
-        /// <summary>
-        /// Servicio de logs de migración.
-        /// </summary>
-        [Inject] private ILogMigracionService? iLogMigracionService { get; set; }
-        // Componente de la grilla para mostrar los registros de migración
         private Grid<LogMigracionDto>? grid;
-        // Variables de control de acceso según el rol del usuario
+
         private bool accessMigration;
         private bool isRolRead;
         private bool isRolOna;
         private bool isRolAdmin;
 
-        /// <summary>
-        /// Servicio de búsqueda y registro de eventos.
-        /// </summary>
-        [Inject] private IBusquedaService iBusquedaService { get; set; }
-        // Objeto para el seguimiento de eventos
-        private EventTrackingDto objEventTracking { get; set; } = new();
-        // Lista que almacena los registros de logs de migración
         private List<LogMigracionDto> listasHevd = new();
 
-        // Parámetros para la paginación
-        private int currentPage = 1;
-        private int pageSize = 10;
-        private int totalItems = 0;
-        private int totalPages = 0;
+        [Inject] public NavigationManager? navigationManager { get; set; }
+        [Inject] ILocalStorageService iLocalStorageService { get; set; }
+        [Inject] private IMigracionExcelService? iMigracionExcelService { get; set; }
+        [Inject] private ILogMigracionService? iLogMigracionService { get; set; }
+        [Inject] private IBusquedaService iBusquedaService { get; set; }
+
+        private EventTrackingDto objEventTracking { get; set; } = new();
+
+        // ðŸ†• Propiedades de paginaciÃ³n
+        private int DisplayPages = 10;
+        private int ActivePageNumber = 1;
+        private int TotalItems = 0;
+        private int TotalPages = 0;
+
+        // ðŸ†• MÃ©todo de cambio de pÃ¡gina
+        private async Task OnActivePageNumberChanged(int newPage)
+        {
+            ActivePageNumber = newPage;
+            await CargarDatos();
+        }
+
+        private async Task OnDisplayPagesChanged(int newDisplayPages)
+        {
+            DisplayPages = newDisplayPages;
+            ActivePageNumber = 1;
+            await CargarDatos();
+        }
 
         protected override async Task OnInitializedAsync()
         {
             isLoading = true;
+
             objEventTracking.CodigoHomologacionMenu = Routes.MIGRACION_EXCEL;
             objEventTracking.NombreAccion = Constantes.ON_INITIALIZED;
             objEventTracking.NombreControl = "migracion-excel";
             objEventTracking.idUsuario = await iLocalStorageService.GetItemAsync<int>(Inicializar.Datos_Usuario_Local);
             objEventTracking.CodigoHomologacionRol = await iLocalStorageService.GetItemAsync<string>(Inicializar.Datos_Usuario_Codigo_Rol_Local);
-            objEventTracking.ParametroJson =  Constantes.JSON_VACIO;
-            objEventTracking.UbicacionJson =  Constantes.VACIO;
+            objEventTracking.ParametroJson = Constantes.JSON_VACIO;
+            objEventTracking.UbicacionJson = Constantes.VACIO;
             await iBusquedaService.AddEventTrackingAsync(objEventTracking);
 
             var usuarioBaseDatos = await iLocalStorageService.GetItemAsync<string>(Inicializar.Datos_Usuario_BaseDatos_Local);
@@ -77,14 +69,13 @@ namespace ClientAppAdministrador.Pages.Administracion.MigracionExcel
 
             isRolRead = rolRelacionado == Constantes.KEY_USER_READ;
             isRolOna = rolRelacionado == Constantes.KEY_USER_ONA;
-            isRolAdmin = rolRelacionado ==Constantes.KEY_USER_CAN;
+            isRolAdmin = rolRelacionado == Constantes.KEY_USER_CAN;
 
-            // Verificación de acceso
             if (!isRolAdmin && !isRolOna)
             {
                 if (!isRolRead)
                 {
-                    if (usuarioMigrar !=Constantes.SUSPENDIDO ||
+                    if (usuarioMigrar != Constantes.SUSPENDIDO ||
                         usuarioEstadoMigracion != Constantes.ACTIVO ||
                         (usuarioBaseDatos != "INACAL" && usuarioBaseDatos != "DTA") ||
                         usuarioOrigenDatos != Constantes.EXCEL)
@@ -104,41 +95,14 @@ namespace ClientAppAdministrador.Pages.Administracion.MigracionExcel
             isLoading = false;
         }
 
-        /// <summary>
-        /// Método que obtiene la lista de homologaciones y aplica los criterios de filtrado.
-        /// </summary>
-        /// <returns>Lista de homologaciones aplicando los filtros.</returns>
         private async Task CargarDatos()
         {
+            var response = await iLogMigracionService.GetLogMigracionesAsync(ActivePageNumber, DisplayPages);
 
-            ResultadoPaginadoDto<List<LogMigracionDto>> response = await iLogMigracionService.GetLogMigracionesAsync(currentPage, pageSize);
-
-            if (response.TotalCount > 0)
-            {
-                listasHevd = response.Data;
-                totalItems = response.TotalCount;
-                totalPages = response.TotalPages;
-            }
+            listasHevd = response.Data ?? new List<LogMigracionDto>();
+            TotalItems = response.TotalCount;
+            TotalPages = response.TotalPages;
         }
-
-        private async Task Anterior()
-        {
-            if (currentPage > 1)
-            {
-                currentPage--;
-                await CargarDatos();
-            }
-        }
-
-        private async Task Siguiente()
-        {
-            if (currentPage < totalPages)
-            {
-                currentPage++;
-                await CargarDatos();
-            }
-        }
-
 
         private string sortColumn = nameof(LogMigracionDto.IdLogMigracion);
         private bool sortAscending = true;
@@ -163,17 +127,13 @@ namespace ClientAppAdministrador.Pages.Administracion.MigracionExcel
         private async Task ExportarExcel()
         {
             if (listasHevd == null || !listasHevd.Any())
-            {
                 return;
-            }
 
             try
             {
                 var base64 = await iMigracionExcelService.ExportarExcelAsync();
-
                 var fileName = $"export_{DateTime.Now:yyyy-MM-dd_HHmmss}.xlsx";
                 await JSRuntime.InvokeVoidAsync("descargarArchivoExcel", base64, fileName);
-
             }
             catch (Exception ex)
             {
@@ -184,14 +144,11 @@ namespace ClientAppAdministrador.Pages.Administracion.MigracionExcel
         private async Task ExportarPDF()
         {
             if (listasHevd == null || !listasHevd.Any())
-            {
                 return;
-            }
 
             try
             {
                 var base64 = await iMigracionExcelService.ExportarPdfAsync();
-
                 var fileName = $"export_{DateTime.Now:yyyy-MM-dd_HHmmss}.pdf";
                 await JSRuntime.InvokeVoidAsync("descargarArchivoExcel", base64, fileName);
             }
